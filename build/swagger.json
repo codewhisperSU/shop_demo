@@ -1,0 +1,120 @@
+{
+	"components": {
+		"examples": {},
+		"headers": {},
+		"parameters": {},
+		"requestBodies": {},
+		"responses": {},
+		"schemas": {
+			"CustomerRequest": {
+				"properties": {
+					"name": {
+						"type": "string"
+					},
+					"address": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"name",
+					"address"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"Customer": {
+				"properties": {
+					"name": {
+						"type": "string"
+					},
+					"address": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"name",
+					"address"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"CustomerList": {
+				"properties": {
+					"data": {
+						"items": {
+							"$ref": "#/components/schemas/Customer"
+						},
+						"type": "array"
+					}
+				},
+				"required": [
+					"data"
+				],
+				"type": "object",
+				"additionalProperties": false
+			}
+		},
+		"securitySchemes": {}
+	},
+	"info": {
+		"title": "shop_demo",
+		"version": "1.0.0",
+		"description": "This is shop demo",
+		"license": {
+			"name": "MIT"
+		},
+		"contact": {
+			"name": "Sami Ukkonen ",
+			"email": "sami.ukkonen@gmail.com"
+		}
+	},
+	"openapi": "3.0.0",
+	"paths": {
+		"/customer/add": {
+			"post": {
+				"operationId": "AddCustomer",
+				"responses": {
+					"201": {
+						"description": "Created"
+					}
+				},
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/CustomerRequest"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/customer/list": {
+			"get": {
+				"operationId": "GetCustomerList",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/CustomerList"
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": []
+			}
+		}
+	},
+	"servers": [
+		{
+			"url": "/"
+		}
+	]
+}

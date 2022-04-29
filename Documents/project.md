@@ -14,7 +14,7 @@ lock
 Product {
 id: number,
 name: string,
-unit_price: number,
+unit_price: float,
 }
 
 Customer {
