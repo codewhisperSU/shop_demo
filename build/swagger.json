@@ -22,33 +22,19 @@
 				"type": "object",
 				"additionalProperties": false
 			},
-			"Customer": {
+			"ProductRequest": {
 				"properties": {
 					"name": {
 						"type": "string"
 					},
-					"address": {
-						"type": "string"
+					"unit_price": {
+						"type": "number",
+						"format": "double"
 					}
 				},
 				"required": [
 					"name",
-					"address"
-				],
-				"type": "object",
-				"additionalProperties": false
-			},
-			"CustomerList": {
-				"properties": {
-					"data": {
-						"items": {
-							"$ref": "#/components/schemas/Customer"
-						},
-						"type": "array"
-					}
-				},
-				"required": [
-					"data"
+					"unit_price"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -101,7 +87,48 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/CustomerList"
+									"type": "string"
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": []
+			}
+		},
+		"/product/add": {
+			"post": {
+				"operationId": "AddProduct",
+				"responses": {
+					"201": {
+						"description": "Created"
+					}
+				},
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/ProductRequest"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/product/list": {
+			"get": {
+				"operationId": "GetProductList",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "string"
 								}
 							}
 						}

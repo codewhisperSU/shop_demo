@@ -1,4 +1,4 @@
-import {Post, Route,SuccessResponse, Controller, Body, TsoaResponse, Res, Get} from 'tsoa';
+import {Post, Route,SuccessResponse, Controller, Body, Get} from 'tsoa';
 import {injectable} from 'tsyringe';
 import { CustomerRequest } from '../models/customer';
 import { CustomerList } from '../models/customer/customer';
@@ -29,7 +29,8 @@ import { CustomerService } from '../services/customer';
     }
 
     @Get("/list")
-    public async getCustomerList() : Promise<CustomerList> {
-      return await this.customerService.getListOfCustomer();
+    public async getCustomerList() : Promise<string> {
+      const customerList = await this.customerService.getListOfCustomer()
+      return JSON.stringify(customerList);
     }
   }

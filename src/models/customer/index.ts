@@ -1,1 +1,1 @@
-export {CustomerRequest} from './customer'
+export {CustomerRequest, Customer, CustomerList} from './customer'
