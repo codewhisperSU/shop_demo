@@ -11,29 +11,23 @@ datasource db {
 }
 
 model Product {
-  id         Int       @id @default(autoincrement())
+  id         Int        @id @default(autoincrement())
   name       String
   unit_price Float
-  purchaseId Int?
-  Purchase   Purchase? @relation(fields: [purchaseId], references: [id])
+  purchase   Purchase[]
 }
 
 model Customer {
   id       Int        @id @default(autoincrement())
-  name     String
+  name     String     @unique()
   address  String
-  Purchase Purchase[]
+  purchage Purchase[]
 }
 
 model Purchase {
-  id       Int       @id @default(autoincrement())
-  date     DateTime
-  customer Customer  @relation(fields: [id], references: [id])
-  product  Product[]
-  status   Status    @default(UNLOCK)
-}
-
-enum Status {
-  UNLOCK
-  LOCK
+  id         Int       @id @default(autoincrement())
+  date       DateTime  @default(now())
+  customer   Customer  @relation(fields: [customerId], references: [id])
+  customerId Int
+  products   Product[] @relation(references: [id])
 }

@@ -27,6 +27,6 @@ Purchase {
 id: number,
 date: datetime,
 customer: Customer,
-product: Product,
+product: Product[],
 status: Status
 }

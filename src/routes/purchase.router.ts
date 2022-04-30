@@ -1,15 +1,16 @@
 import express from "express";
-import CustomerController from "../controllers/customer.controller";
-import { CustomerService } from "../services/customer"
+import PurchaseController from "../controllers/purchace.controller";
+import { PurchaseService } from "../services/purchace";
+
 
 
 const router = express.Router();
 
 
 router.post("/add", async (req: express.Request, res: express.Response, next) => {
-    const controller = new CustomerController(new CustomerService());
+    const controller = new PurchaseController(new PurchaseService());
     try{
-        const response = await controller.addCustomer(req.body);
+        const response = await controller.addPurchase(req.body);
         return res.send(response);
     }catch(error){
         next(error)
@@ -17,10 +18,10 @@ router.post("/add", async (req: express.Request, res: express.Response, next) =>
 })
 
 router.get("/list", async (req: express.Request, res: express.Response, next) => {
-    const controller = new CustomerController(new CustomerService());
+    const controller = new PurchaseController(new PurchaseService());
     try{
     
-        const response = await controller.getCustomerList();
+        const response = await controller.getPurchaseList();
         return res.send(response);
     }catch(error){
         next(error)

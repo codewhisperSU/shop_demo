@@ -25,10 +25,10 @@ export class ProductService {
 
         try{
         await prisma.product.create({
-            data: {
-                name:product.name,
-                unit_price: product.unit_price
-            }
+           data:{
+               name: product.name,
+               unit_price: product.unit_price,
+           }
         })
         }catch{
             throw new Error("Cannot create product!");
