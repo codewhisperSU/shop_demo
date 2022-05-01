@@ -7,12 +7,22 @@ export enum Status{
     LOCK
 }
 
+export interface PurchasePerCustomerProduct{
+    purchaseDate: Date;
+    customerName: string;
+    customerAddress: string;
+    purchaseProduct: [{
+        name: string;
+        unit_price: number;
+    }]
+
+}
+
 
 export interface Purchase {
     date: Date;
     customer: Customer;
-    product: Product[],
-    status: Status
+    product: Product[];
 }
 
 export interface PurchaseRequest {
@@ -21,5 +31,5 @@ export interface PurchaseRequest {
 }
   
 export interface PurchaseList{
-    data: Purchase[];
+    data: PurchasePerCustomerProduct[];
 }

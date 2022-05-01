@@ -1,7 +1,7 @@
 import {singleton} from 'tsyringe';
-import { PrismaClient} from '@prisma/client';
-import { Customer, CustomerList } from '../models/customer/customer';
-import { PurchaseRequest } from '../models/purchase';
+import { PrismaClient } from '@prisma/client';
+import { PurchaseList, PurchaseRequest, Purchase } from '../models/purchase';
+import { PurchasePerCustomerProduct } from '../models/purchase/purchase';
 
 const prisma = new PrismaClient();
 
@@ -53,14 +53,27 @@ export class PurchaseService {
         }
     }
 
-    public async getListOfPurchase(): Promise<CustomerList>{
-        const customerList = await prisma.customer.findMany();
+    public async getListOfPurchase(): Promise<PurchaseList>{
+        const purchaseList = await prisma.purchase.findMany({
+            include:{
+                products: true,
+                customer: true,
+            }
+        });
 
-        const customer = customerList.map(r => {
-          return {  name: r.name, address: r.address
-        } as Customer
-        } );
+        const purchase = purchaseList.map(r => { return {
+            purchaseDate: r.date,
+            customerName: r.customer.name,
+            customerAddress: r.customer.address,
+            purchaseProduct: [...r.products.map(r => {
+                return {
+                    name: r.name,
+                    unit_price: r.unit_price,
+                }
+            })]
+        } as PurchasePerCustomerProduct})
 
-        return {data: customer} as CustomerList;
+       
+        return {data: purchase} as PurchaseList;
     }
 }
