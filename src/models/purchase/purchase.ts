@@ -11,13 +11,9 @@ export interface PurchasePerCustomerProduct{
     purchaseDate: Date;
     customerName: string;
     customerAddress: string;
-    purchaseProduct: [{
-        name: string;
-        unit_price: number;
-    }]
+    purchaseProduct: Omit<Product, "id">[]
 
 }
-
 
 export interface Purchase {
     date: Date;
@@ -27,7 +23,7 @@ export interface Purchase {
 
 export interface PurchaseRequest {
     customerName: String;
-    products: Product[],
+    products: Omit<Product, "unit_price">[],
 }
   
 export interface PurchaseList{

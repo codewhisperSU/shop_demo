@@ -2,10 +2,10 @@ import 'reflect-metadata';
 import express, {Express, NextFunction, Request, Response} from 'express';
 import swaggerUi from "swagger-ui-express";
 import dotenv from 'dotenv';
-import bodyParser from "body-parser";
+import bodyParser, { json } from "body-parser";
 import cors from 'cors';
 import Router from "./routes";
-
+import { SystemError } from './models/error/error';
 
 dotenv.config();
 
@@ -29,7 +29,7 @@ app.use("/docs",
 swaggerUi.serve,
 swaggerUi.setup(undefined, {
     swaggerOptions: {
-        url: "/swagger.json",
+        url: "../build/swagger.json",
     }
 }));
 
@@ -40,9 +40,10 @@ app.get('/', (reg: Request, res: Response) => {
 })
 
 app.use( (err: Error, req: Request, res: Response, next: NextFunction) => {
-    const message = err.message;
+
+    const systemError = {errorMessage: err.message} as SystemError
   
-    res.status(500).send(message)
+    res.status(500).send(JSON.stringify(systemError));
 })
 
 app.listen(port, () => {

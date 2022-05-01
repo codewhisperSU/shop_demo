@@ -1,0 +1,1 @@
+export {CustomerAndProductList} from "./search";

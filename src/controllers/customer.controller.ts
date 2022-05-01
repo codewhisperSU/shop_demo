@@ -1,7 +1,6 @@
 import {Post, Route,SuccessResponse, Controller, Body, Get} from 'tsoa';
 import {injectable} from 'tsyringe';
 import { CustomerRequest } from '../models/customer';
-import { CustomerList } from '../models/customer/customer';
 import { CustomerService } from '../services/customer';
 
 

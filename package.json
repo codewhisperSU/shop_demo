@@ -12,7 +12,8 @@
     "predev": "npm run swagger",
     "prebuild": "npm run swagger",
     "dev": "concurrently \"npx tsc --watch\" \"nodemon -q dist/index.js\"",
-    "swagger": "tsoa spec"
+    "swagger": "tsoa spec",
+    "test": "jest"
   },
   "dependencies": {
     "@prisma/client": "^3.13.0",
