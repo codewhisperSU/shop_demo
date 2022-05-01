@@ -1,11 +1,14 @@
 import 'reflect-metadata';
 import express, {Express, NextFunction, Request, Response} from 'express';
-import swaggerUi from "swagger-ui-express";
 import dotenv from 'dotenv';
 import bodyParser, { json } from "body-parser";
 import cors from 'cors';
+import morgan from 'morgan';
+import swaggerUi from "swagger-ui-express";
+
 import Router from "./routes";
 import { SystemError } from './models/error/error';
+import swaggerDocSpecs from './swaggerOptions';
 
 dotenv.config();
 
@@ -13,6 +16,8 @@ dotenv.config();
 
 const app: Express = express();
 const port = process.env.PORT;
+
+app.use(morgan("combined"));
 
 app.use(bodyParser.urlencoded({
     extended: true,
@@ -27,11 +32,7 @@ app.use(express.json());
 
 app.use("/docs",
 swaggerUi.serve,
-swaggerUi.setup(undefined, {
-    swaggerOptions: {
-        url: "../build/swagger.json",
-    }
-}));
+swaggerUi.setup(swaggerDocSpecs));
 
 app.use(Router);
 
