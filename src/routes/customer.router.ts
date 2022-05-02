@@ -16,13 +16,10 @@ const router = express.Router();
  *          schema:
  *              type: object
  *              properties:
- *                  customer:
- *                      type: object
- *                      properties: 
- *                           name: 
- *                              type: string,
- *                           address: 
- *                              type: string    
+ *                  name: 
+ *                    type: string,
+ *                  address: 
+ *                    type: string    
  *                          
  *          examples: 
  *              customer:
@@ -68,10 +65,10 @@ router.post("/add", async (req: express.Request, res: express.Response, next) =>
  *                      examples:
  *                          data:
  *                              summary: List of customers
- *                              value: [{
+ *                              value: { data: [{
  *                                  name: "Test customer",
  *                                  address: "Test address"
- *                              }]                          
+ *                              }] }                          
  */
 
 router.get("/list", async (req: express.Request, res: express.Response, next) => {
