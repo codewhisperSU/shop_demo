@@ -1,6 +1,6 @@
 import express from "express";
-import PurchaseController from "../controllers/purchace.controller";
-import { PurchaseService } from "../services/purchace";
+import PurchaseController from "../controllers/purchase.controller";
+import { PurchaseService } from "../services/purchase";
 
 
 
@@ -38,7 +38,7 @@ const router = express.Router();
  *                      }
  *     responses:
  *       200:
- *         description: Returns void.
+ *         description:  Returns response 200.
  *       500:
  *          description: Get error object and description
  *          content:

@@ -27,3 +27,7 @@ Set purchase with add.
 Then you can get list all GET.
 5:
 You can search customer and product by name. Select GET /v1/search/customerOrProductByName/{name}.
+
+# Test project
+
+Go to project folder and open it terminal. Write `yarn test` to terminal and run.

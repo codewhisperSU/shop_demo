@@ -15,7 +15,7 @@ export default class SearchController extends Controller {
   public async searchCustomerOrProductByName( @Path("name") name: string ) : Promise<string> {
 
     if(!name){
-        throw new Error("Name is empty!");
+        throw new Error("Search name is empty!");
     }
 
     const customerList = await this.searchService.customerOrProductByName(name);

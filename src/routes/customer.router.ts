@@ -30,7 +30,7 @@ const router = express.Router();
  *                      }
  *     responses:
  *       200:
- *         description: Returns void.
+ *         description: Returns response 200.
  *       500:
  *          description: Get error object and description
  *          content:

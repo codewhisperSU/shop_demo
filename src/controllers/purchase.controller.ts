@@ -1,7 +1,7 @@
 import {Post, Route,SuccessResponse, Controller, Body, Get} from 'tsoa';
 import {injectable} from 'tsyringe';
 import { PurchaseRequest } from '../models/purchase';
-import { PurchaseService } from '../services/purchace';
+import { PurchaseService } from '../services/purchase';
 
 
 
@@ -17,7 +17,11 @@ export default class PurchaseController extends Controller {
   public async addPurchase(@Body() purchaseRequest: PurchaseRequest): Promise<void> {
     
     if(!purchaseRequest.customerName || purchaseRequest?.products?.length === 0){
-      throw new Error("Customer name or product name is missing!");
+      throw new Error("Purchase customer name or product name is missing!");
+    }
+
+    if(!Array.isArray(purchaseRequest.products)){
+      throw new Error("Purchase products is not array!");
     }
 
     try{
@@ -29,7 +33,7 @@ export default class PurchaseController extends Controller {
 
   @Get("/list")
   public async getPurchaseList() : Promise<string> {
-    const customerList = await this.purchaseService.getListOfPurchase()
-    return JSON.stringify(customerList);
+    const purchaseList = await this.purchaseService.getListOfPurchase()
+    return JSON.stringify(purchaseList);
   }
 }

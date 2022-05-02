@@ -25,12 +25,12 @@ const router = express.Router();
  *              product:
  *                  summary: New product data
  *                  value: {
- *                      name: "Test customer",
+ *                      name: "Test product",
  *                      unit_price: 123.0,
  *                      }
  *     responses:
  *       200:
- *         description: Returns void.
+ *         description: Returns response 200.
  *       500:
  *          description: Get error object and description
  *          content:
