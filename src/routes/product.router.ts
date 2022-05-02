@@ -31,6 +31,15 @@ const router = express.Router();
  *     responses:
  *       200:
  *         description: Returns void.
+ *       500:
+ *          description: Get error object and description
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                     type: object
+ *                     properties:
+ *                       errorMessage:
+ *                          type: string
  */
 router.post("/add", async (req: express.Request, res: express.Response, next) => {
     const controller = new ProductController(new ProductService());
