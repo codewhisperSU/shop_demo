@@ -16,7 +16,8 @@ Then open browser and added this url to browser: `http://localhost:8000/v1/docs/
 
 Now you can start to set data to database with swagger interface.
 
-If you want to do real dataset then go this order:
+When you make test data. Go to follow order:
+You can test GET /list methods all case.
 1:
 Set customer with add.
 2:
@@ -24,8 +25,6 @@ Set product with add.
 3:
 Set purchase with add.
 4:
-Then you can get list all GET.
-5:
 You can search customer and product by name. Select GET /v1/search/customerOrProductByName/{name}.
 
 # Test project
