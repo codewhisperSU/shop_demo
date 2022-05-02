@@ -15,6 +15,15 @@ const router = express.Router();
  *       'application/json':
  *          schema:
  *              type: object
+ *              properties:
+ *                  customer:
+ *                      type: object
+ *                      properties: 
+ *                           name: 
+ *                              type: string,
+ *                           address: 
+ *                              type: string    
+ *                          
  *          examples: 
  *              customer:
  *                  summary: New customer data
@@ -35,6 +44,35 @@ router.post("/add", async (req: express.Request, res: express.Response, next) =>
         next(error)
     }
 })
+
+/**
+ * @openapi
+ * /v1/customer/list:
+ *  get:
+ *      responses:
+ *          '200':
+ *              description: return customer list
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                         type: object
+ *                         properties:
+ *                          data:
+ *                              type: array
+ *                              items:
+ *                                  type: object
+ *                                  properties: 
+ *                                       name:
+ *                                          type: string
+ *                                          address: string
+ *                      examples:
+ *                          data:
+ *                              summary: List of customers
+ *                              value: [{
+ *                                  name: "Test customer",
+ *                                  address: "Test address"
+ *                              }]                          
+ */
 
 router.get("/list", async (req: express.Request, res: express.Response, next) => {
     const controller = new CustomerController(new CustomerService());
