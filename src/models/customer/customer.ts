@@ -1,13 +1,13 @@
 export interface Customer {
-    name: string;
+    name: string
     address: string
-    }
+}
 
-    export interface CustomerRequest {
-        name: string;
-        address: string
-    }
-  
-export interface CustomerList{
-    data: Customer[];
+export interface CustomerRequest {
+    name: string
+    address: string
+}
+
+export interface CustomerList {
+    data: Customer[]
 }

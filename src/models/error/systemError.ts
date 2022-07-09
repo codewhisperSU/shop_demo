@@ -1,3 +1,3 @@
-export interface SystemError{
-    errorMessage: String;
+export interface SystemError {
+    errorMessage: String
 }

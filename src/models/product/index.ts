@@ -1,1 +1,1 @@
-export {ProductRequest, Product, ProductList} from "./product"
+export { ProductRequest, Product, ProductList } from './product'

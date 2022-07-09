@@ -1,9 +1,8 @@
-import express from "express";
-import ProductController from "../controllers/product.controller";
-import { ProductService } from "../services/product"
+import express from 'express'
+import ProductController from '../controllers/product.controller'
+import { ProductService } from '../services/product'
 
-
-const router = express.Router();
+const router = express.Router()
 
 /**
  * @openapi
@@ -16,12 +15,12 @@ const router = express.Router();
  *          schema:
  *              type: object
  *              properties:
- *                  name: 
+ *                  name:
  *                    type: string,
- *                  unit_price: 
- *                    type: number    
- *                          
- *          examples: 
+ *                  unit_price:
+ *                    type: number
+ *
+ *          examples:
  *              product:
  *                  summary: New product data
  *                  value: {
@@ -41,15 +40,18 @@ const router = express.Router();
  *                       errorMessage:
  *                          type: string
  */
-router.post("/add", async (req: express.Request, res: express.Response, next) => {
-    const controller = new ProductController(new ProductService());
-    try{
-        const response = await controller.addProduct(req.body);
-        return res.send(response);
-    }catch(error){
-        next(error)
+router.post(
+    '/add',
+    async (req: express.Request, res: express.Response, next) => {
+        const controller = new ProductController(new ProductService())
+        try {
+            const response = await controller.addProduct(req.body)
+            return res.send(response)
+        } catch (error) {
+            next(error)
+        }
     }
-})
+)
 
 /**
  * @openapi
@@ -67,10 +69,10 @@ router.post("/add", async (req: express.Request, res: express.Response, next) =>
  *                              type: array
  *                              items:
  *                                  type: object
- *                                  properties: 
+ *                                  properties:
  *                                       name:
  *                                          type: string
- *                                       unit_price: 
+ *                                       unit_price:
  *                                           type: number
  *                      examples:
  *                          data:
@@ -78,18 +80,19 @@ router.post("/add", async (req: express.Request, res: express.Response, next) =>
  *                              value: { data: [{
  *                                  name: "Test product",
  *                                  unit_price: 123.0
- *                              }]}                          
+ *                              }]}
  */
-router.get("/list", async (req: express.Request, res: express.Response, next) => {
-    const controller = new ProductController(new ProductService());
-    try{
-    
-        const response = await controller.getProductList();
-        return res.send(response);
-    }catch(error){
-        next(error)
+router.get(
+    '/list',
+    async (req: express.Request, res: express.Response, next) => {
+        const controller = new ProductController(new ProductService())
+        try {
+            const response = await controller.getProductList()
+            return res.send(response)
+        } catch (error) {
+            next(error)
+        }
     }
-})
+)
 
-
-export default router;
+export default router

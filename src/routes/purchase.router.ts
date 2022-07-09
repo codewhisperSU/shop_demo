@@ -1,10 +1,8 @@
-import express from "express";
-import PurchaseController from "../controllers/purchase.controller";
-import { PurchaseService } from "../services/purchase";
+import express from 'express'
+import PurchaseController from '../controllers/purchase.controller'
+import { PurchaseService } from '../services/purchase'
 
-
-
-const router = express.Router();
+const router = express.Router()
 
 /**
  * @openapi
@@ -16,18 +14,18 @@ const router = express.Router();
  *       'application/json':
  *          schema:
  *              type: object
- *              properties: 
- *                 customerName: 
+ *              properties:
+ *                 customerName:
  *                    type: string
- *                 products: 
+ *                 products:
  *                    type: array
  *                    items:
  *                      type: object
  *                      properties:
  *                          name:
- *                           type: string    
- *                          
- *          examples: 
+ *                           type: string
+ *
+ *          examples:
  *              product:
  *                  summary: New purchase data
  *                  value: {
@@ -50,15 +48,18 @@ const router = express.Router();
  *                          type: string
  */
 
-router.post("/add", async (req: express.Request, res: express.Response, next) => {
-    const controller = new PurchaseController(new PurchaseService());
-    try{
-        const response = await controller.addPurchase(req.body);
-        return res.send(response);
-    }catch(error){
-        next(error)
+router.post(
+    '/add',
+    async (req: express.Request, res: express.Response, next) => {
+        const controller = new PurchaseController(new PurchaseService())
+        try {
+            const response = await controller.addPurchase(req.body)
+            return res.send(response)
+        } catch (error) {
+            next(error)
+        }
     }
-})
+)
 
 /**
  * @openapi
@@ -76,12 +77,12 @@ router.post("/add", async (req: express.Request, res: express.Response, next) =>
  *                              type: array
  *                              items:
  *                                  type: object
- *                                  properties: 
+ *                                  properties:
  *                                       purchaseDate:
  *                                          type: date
- *                                       customerName: 
+ *                                       customerName:
  *                                          type: string
- *                                       customerAddress: 
+ *                                       customerAddress:
  *                                          type: string
  *                                       purchaseProduct:
  *                                          type: array
@@ -91,8 +92,8 @@ router.post("/add", async (req: express.Request, res: express.Response, next) =>
  *                                                  name:
  *                                                    type: string
  *                                                  unit_price:
- *                                                     type: number       
- * 
+ *                                                     type: number
+ *
  *                      examples:
  *                          data:
  *                              summary: List of purchase
@@ -104,19 +105,20 @@ router.post("/add", async (req: express.Request, res: express.Response, next) =>
  *                                          name: "Test product",
  *                                          unit_price: 123
  *                                      }]
- *                              }]}                          
+ *                              }]}
  */
 
-router.get("/list", async (req: express.Request, res: express.Response, next) => {
-    const controller = new PurchaseController(new PurchaseService());
-    try{
-    
-        const response = await controller.getPurchaseList();
-        return res.send(response);
-    }catch(error){
-        next(error)
+router.get(
+    '/list',
+    async (req: express.Request, res: express.Response, next) => {
+        const controller = new PurchaseController(new PurchaseService())
+        try {
+            const response = await controller.getPurchaseList()
+            return res.send(response)
+        } catch (error) {
+            next(error)
+        }
     }
-})
+)
 
-
-export default router;
+export default router

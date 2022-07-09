@@ -1,9 +1,8 @@
-import express from "express";
-import CustomerController from "../controllers/customer.controller";
-import { CustomerService } from "../services/customer"
+import express from 'express'
+import CustomerController from '../controllers/customer.controller'
+import { CustomerService } from '../services/customer'
 
-
-const router = express.Router();
+const router = express.Router()
 
 /**
  * @openapi
@@ -16,12 +15,12 @@ const router = express.Router();
  *          schema:
  *              type: object
  *              properties:
- *                  name: 
+ *                  name:
  *                    type: string,
- *                  address: 
- *                    type: string    
- *                          
- *          examples: 
+ *                  address:
+ *                    type: string
+ *
+ *          examples:
  *              customer:
  *                  summary: New customer data
  *                  value: {
@@ -40,17 +39,20 @@ const router = express.Router();
  *                     properties:
  *                       errorMessage:
  *                          type: string
- * 
+ *
  */
-router.post("/add", async (req: express.Request, res: express.Response, next) => {
-    const controller = new CustomerController(new CustomerService());
-    try{
-        const response = await controller.addCustomer(req.body);
-        return res.send(response);
-    }catch(error){
-        next(error)
+router.post(
+    '/add',
+    async (req: express.Request, res: express.Response, next) => {
+        const controller = new CustomerController(new CustomerService())
+        try {
+            const response = await controller.addCustomer(req.body)
+            return res.send(response)
+        } catch (error) {
+            next(error)
+        }
     }
-})
+)
 
 /**
  * @openapi
@@ -68,7 +70,7 @@ router.post("/add", async (req: express.Request, res: express.Response, next) =>
  *                              type: array
  *                              items:
  *                                  type: object
- *                                  properties: 
+ *                                  properties:
  *                                       name:
  *                                          type: string
  *                                          address: string
@@ -78,19 +80,20 @@ router.post("/add", async (req: express.Request, res: express.Response, next) =>
  *                              value: { data: [{
  *                                  name: "Test customer",
  *                                  address: "Test address"
- *                              }] }                          
+ *                              }] }
  */
 
-router.get("/list", async (req: express.Request, res: express.Response, next) => {
-    const controller = new CustomerController(new CustomerService());
-    try{
-    
-        const response = await controller.getCustomerList();
-        return res.send(response);
-    }catch(error){
-        next(error)
+router.get(
+    '/list',
+    async (req: express.Request, res: express.Response, next) => {
+        const controller = new CustomerController(new CustomerService())
+        try {
+            const response = await controller.getCustomerList()
+            return res.send(response)
+        } catch (error) {
+            next(error)
+        }
     }
-})
+)
 
-
-export default router;
+export default router

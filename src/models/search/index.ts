@@ -1,1 +1,1 @@
-export {CustomerAndProductList} from "./search";
+export { CustomerAndProductList } from './search'
