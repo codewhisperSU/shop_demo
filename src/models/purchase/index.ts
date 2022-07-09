@@ -1,1 +1,2 @@
-export { Purchase, PurchaseList, PurchaseRequest } from './purchase'
+export { Purchase, PurchaseList } from './purchase';
+export { PurchaseDto } from './purchase.dto';

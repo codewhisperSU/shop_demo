@@ -1,1 +1,2 @@
-export { ProductRequest, Product, ProductList } from './product'
+export { Product, ProductList } from './product';
+export { ProductDto } from './product.dto';

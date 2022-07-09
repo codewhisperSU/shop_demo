@@ -1,1 +1,1 @@
-export { CustomerAndProductList } from './search'
+export { CustomerAndProductListDto } from './search.dto';

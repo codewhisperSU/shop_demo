@@ -1,13 +1,14 @@
-import { singleton } from 'tsyringe'
-import { PrismaClient } from '@prisma/client'
-import { CustomerRequest } from '../models/customer'
-import { Customer, CustomerList } from '../models/customer/customer'
+import { singleton } from 'tsyringe';
+import { PrismaClient } from '@prisma/client';
+import { Customer, CustomerList } from '../models/customer/customer';
+import { CustomerDto } from '../models/customer';
+import { CustomerListDto } from '../models/customer/customer.dto';
 
-const prisma = new PrismaClient()
+const prisma = new PrismaClient();
 
 @singleton()
 export class CustomerService {
-    public async createCustomer(customer: CustomerRequest): Promise<void> {
+    public async createCustomer(customer: CustomerDto): Promise<void> {
         const customerData = await prisma.customer.findFirst({
             where: {
                 name: customer.name,
@@ -15,10 +16,10 @@ export class CustomerService {
                     address: customer.address,
                 },
             },
-        })
+        });
 
         if (customerData) {
-            throw new Error('Customer found!')
+            throw new Error('Customer found!');
         }
 
         try {
@@ -27,19 +28,19 @@ export class CustomerService {
                     name: customer.name,
                     address: customer.address,
                 },
-            })
+            });
         } catch {
-            throw new Error('Cannot create customer!')
+            throw new Error('Cannot create customer!');
         }
     }
 
-    public async getListOfCustomer(): Promise<CustomerList> {
-        const customerList = await prisma.customer.findMany()
+    public async getListOfCustomer(): Promise<CustomerListDto> {
+        const customerList = await prisma.customer.findMany();
 
         const customer = customerList.map((r) => {
-            return { name: r.name, address: r.address } as Customer
-        })
+            return { name: r.name, address: r.address } as Customer;
+        });
 
-        return { data: customer } as CustomerList
+        return { data: customer } as CustomerListDto;
     }
 }

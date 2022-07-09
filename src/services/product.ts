@@ -1,13 +1,15 @@
-import { singleton } from 'tsyringe'
-import { PrismaClient } from '@prisma/client'
-import { Customer, CustomerList } from '../models/customer/customer'
-import { Product, ProductList, ProductRequest } from '../models/product/product'
+import { singleton } from 'tsyringe';
+import { PrismaClient } from '@prisma/client';
+import { Customer, CustomerList } from '../models/customer/customer';
+import { Product, ProductList } from '../models/product/product';
+import { ProductDto } from '../models/product';
+import { ProductListDto } from '../models/product/product.dto';
 
-const prisma = new PrismaClient()
+const prisma = new PrismaClient();
 
 @singleton()
 export class ProductService {
-    public async createProduct(product: ProductRequest): Promise<void> {
+    public async createProduct(product: ProductDto): Promise<void> {
         const customerData = await prisma.product.findFirst({
             where: {
                 name: product.name,
@@ -15,10 +17,10 @@ export class ProductService {
                     unit_price: product.unit_price,
                 },
             },
-        })
+        });
 
         if (customerData) {
-            throw new Error('Product found and price is same!')
+            throw new Error('Product found and price is same!');
         }
 
         try {
@@ -27,19 +29,19 @@ export class ProductService {
                     name: product.name,
                     unit_price: product.unit_price,
                 },
-            })
+            });
         } catch {
-            throw new Error('Cannot create product!')
+            throw new Error('Cannot create product!');
         }
     }
 
-    public async getListOfProduct(): Promise<ProductList> {
-        const productList = await prisma.product.findMany()
+    public async getListOfProduct(): Promise<ProductListDto> {
+        const productList = await prisma.product.findMany();
 
         const product = productList.map((r) => {
-            return { name: r.name, unit_price: r.unit_price } as Product
-        })
+            return { name: r.name, unit_price: r.unit_price } as Product;
+        });
 
-        return { data: product } as ProductList
+        return { data: product } as ProductListDto;
     }
 }

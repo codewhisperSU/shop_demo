@@ -1,6 +1,7 @@
 import { Post, Route, SuccessResponse, Controller, Body, Get } from 'tsoa'
 import { injectable } from 'tsyringe'
-import { CustomerRequest } from '../models/customer'
+import { CustomerDto, CustomerList } from '../models/customer'
+import { CustomerListDto } from '../models/customer/customer.dto'
 import { CustomerService } from '../services/customer'
 
 @injectable()
@@ -13,7 +14,7 @@ export default class CustomerController extends Controller {
     @SuccessResponse(201, 'Created')
     @Post('/add')
     public async addCustomer(
-        @Body() customerRequest: CustomerRequest
+        @Body() customerRequest: CustomerDto
     ): Promise<void> {
         if (!customerRequest.name || !customerRequest.address) {
             throw new Error('Name or address missing!')
@@ -27,8 +28,7 @@ export default class CustomerController extends Controller {
     }
 
     @Get('/list')
-    public async getCustomerList(): Promise<string> {
-        const customerList = await this.customerService.getListOfCustomer()
-        return JSON.stringify(customerList)
+    public async getCustomerList(): Promise<CustomerListDto> {
+        return await this.customerService.getListOfCustomer()
     }
 }

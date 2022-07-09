@@ -1,21 +1,21 @@
-import { singleton } from 'tsyringe'
-import { PrismaClient } from '@prisma/client'
-import { CustomerAndProductList } from '../models/search'
+import { singleton } from 'tsyringe';
+import { PrismaClient } from '@prisma/client';
+import { CustomerAndProductListDto } from '../models/search';
 
-const prisma = new PrismaClient()
+const prisma = new PrismaClient();
 
 @singleton()
 export class SearchService {
     public async customerOrProductByName(
         name: string
-    ): Promise<CustomerAndProductList> {
+    ): Promise<CustomerAndProductListDto> {
         const customerList = await prisma.customer.findMany({
             where: {
                 name: {
                     contains: name,
                 },
             },
-        })
+        });
 
         const productList = await prisma.product.findMany({
             where: {
@@ -23,13 +23,13 @@ export class SearchService {
                     contains: name,
                 },
             },
-        })
+        });
 
         const customerOrProductList = {
             product: productList,
             customer: customerList,
-        } as CustomerAndProductList
+        } as CustomerAndProductListDto;
 
-        return customerOrProductList
+        return customerOrProductList;
     }
 }
