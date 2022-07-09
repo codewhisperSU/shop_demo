@@ -6,7 +6,7 @@
 		"requestBodies": {},
 		"responses": {},
 		"schemas": {
-			"CustomerRequest": {
+			"CustomerDto": {
 				"properties": {
 					"name": {
 						"type": "string"
@@ -22,7 +22,38 @@
 				"type": "object",
 				"additionalProperties": false
 			},
-			"ProductRequest": {
+			"Customer": {
+				"properties": {
+					"name": {
+						"type": "string"
+					},
+					"address": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"name",
+					"address"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"CustomerListDto": {
+				"properties": {
+					"data": {
+						"items": {
+							"$ref": "#/components/schemas/Customer"
+						},
+						"type": "array"
+					}
+				},
+				"required": [
+					"data"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"ProductDto": {
 				"properties": {
 					"name": {
 						"type": "string"
@@ -35,6 +66,38 @@
 				"required": [
 					"name",
 					"unit_price"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"Product": {
+				"properties": {
+					"name": {
+						"type": "string"
+					},
+					"unit_price": {
+						"type": "number",
+						"format": "double"
+					}
+				},
+				"required": [
+					"name",
+					"unit_price"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"ProductListDto": {
+				"properties": {
+					"data": {
+						"items": {
+							"$ref": "#/components/schemas/Product"
+						},
+						"type": "array"
+					}
+				},
+				"required": [
+					"data"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -55,7 +118,7 @@
 				"$ref": "#/components/schemas/Pick_Product.Exclude_keyofProduct.unit_price__",
 				"description": "Construct a type with the properties of T except for those in type K."
 			},
-			"PurchaseRequest": {
+			"PurchaseDto": {
 				"properties": {
 					"customerName": {
 						"type": "string"
@@ -70,6 +133,112 @@
 				"required": [
 					"customerName",
 					"products"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"Pick_Product.Exclude_keyofProduct.id__": {
+				"properties": {
+					"unit_price": {
+						"type": "number",
+						"format": "double"
+					},
+					"name": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"unit_price",
+					"name"
+				],
+				"type": "object",
+				"description": "From T, pick a set of properties whose keys are in the union K"
+			},
+			"Omit_Product.id_": {
+				"$ref": "#/components/schemas/Pick_Product.Exclude_keyofProduct.id__",
+				"description": "Construct a type with the properties of T except for those in type K."
+			},
+			"PurchasePerCustomerProduct": {
+				"properties": {
+					"purchaseDate": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"customerName": {
+						"type": "string"
+					},
+					"customerAddress": {
+						"type": "string"
+					},
+					"purchaseProduct": {
+						"items": {
+							"$ref": "#/components/schemas/Omit_Product.id_"
+						},
+						"type": "array"
+					}
+				},
+				"required": [
+					"purchaseDate",
+					"customerName",
+					"customerAddress",
+					"purchaseProduct"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"PurchaseListDto": {
+				"properties": {
+					"data": {
+						"items": {
+							"$ref": "#/components/schemas/PurchasePerCustomerProduct"
+						},
+						"type": "array"
+					}
+				},
+				"required": [
+					"data"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"Pick_Customer.Exclude_keyofCustomer.id__": {
+				"properties": {
+					"name": {
+						"type": "string"
+					},
+					"address": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"name",
+					"address"
+				],
+				"type": "object",
+				"description": "From T, pick a set of properties whose keys are in the union K"
+			},
+			"Omit_Customer.id_": {
+				"$ref": "#/components/schemas/Pick_Customer.Exclude_keyofCustomer.id__",
+				"description": "Construct a type with the properties of T except for those in type K."
+			},
+			"CustomerAndProductListDto": {
+				"properties": {
+					"customer": {
+						"items": {
+							"$ref": "#/components/schemas/Omit_Customer.id_"
+						},
+						"type": "array"
+					},
+					"product": {
+						"items": {
+							"$ref": "#/components/schemas/Omit_Product.id_"
+						},
+						"type": "array"
+					}
+				},
+				"required": [
+					"customer",
+					"product"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -106,7 +275,7 @@
 					"content": {
 						"application/json": {
 							"schema": {
-								"$ref": "#/components/schemas/CustomerRequest"
+								"$ref": "#/components/schemas/CustomerDto"
 							}
 						}
 					}
@@ -122,7 +291,7 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"type": "string"
+									"$ref": "#/components/schemas/CustomerListDto"
 								}
 							}
 						}
@@ -147,7 +316,7 @@
 					"content": {
 						"application/json": {
 							"schema": {
-								"$ref": "#/components/schemas/ProductRequest"
+								"$ref": "#/components/schemas/ProductDto"
 							}
 						}
 					}
@@ -163,7 +332,7 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"type": "string"
+									"$ref": "#/components/schemas/ProductListDto"
 								}
 							}
 						}
@@ -188,7 +357,7 @@
 					"content": {
 						"application/json": {
 							"schema": {
-								"$ref": "#/components/schemas/PurchaseRequest"
+								"$ref": "#/components/schemas/PurchaseDto"
 							}
 						}
 					}
@@ -204,7 +373,7 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"type": "string"
+									"$ref": "#/components/schemas/PurchaseListDto"
 								}
 							}
 						}
@@ -223,7 +392,7 @@
 						"content": {
 							"application/json": {
 								"schema": {
-									"type": "string"
+									"$ref": "#/components/schemas/CustomerAndProductListDto"
 								}
 							}
 						}

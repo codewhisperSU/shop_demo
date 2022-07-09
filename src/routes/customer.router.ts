@@ -1,8 +1,9 @@
-import express from 'express'
-import CustomerController from '../controllers/customer.controller'
-import { CustomerService } from '../services/customer'
+import express from 'express';
+import { check, validationResult } from 'express-validator';
+import CustomerController from '../controllers/customer.controller';
+import { CustomerService } from '../services/customer';
 
-const router = express.Router()
+const router = express.Router();
 
 /**
  * @openapi
@@ -43,16 +44,39 @@ const router = express.Router()
  */
 router.post(
     '/add',
-    async (req: express.Request, res: express.Response, next) => {
-        const controller = new CustomerController(new CustomerService())
+    [
+        check('name')
+            .notEmpty()
+            .withMessage('Name cannot be empty')
+            .isString()
+            .isLength({ min: 5, max: 500 })
+            .withMessage('Name length is too short or too big.'),
+
+        check('address')
+            .isString()
+            .isLength({ min: 0, max: 500 })
+            .withMessage('Address length is too big.'),
+    ],
+    async (
+        req: express.Request,
+        res: express.Response,
+        next: express.NextFunction
+    ) => {
+        const validateResult = validationResult(req);
+
+        if (!validateResult.isEmpty()) {
+            next(validateResult.array());
+        }
+
+        const controller = new CustomerController(new CustomerService());
         try {
-            const response = await controller.addCustomer(req.body)
-            return res.send(response)
+            const response = await controller.addCustomer(req.body);
+            return res.send(response);
         } catch (error) {
-            next(error)
+            next(error);
         }
     }
-)
+);
 
 /**
  * @openapi
@@ -86,14 +110,14 @@ router.post(
 router.get(
     '/list',
     async (req: express.Request, res: express.Response, next) => {
-        const controller = new CustomerController(new CustomerService())
+        const controller = new CustomerController(new CustomerService());
         try {
-            const response = await controller.getCustomerList()
-            return res.send(response)
+            const response = await controller.getCustomerList();
+            return res.send(response);
         } catch (error) {
-            next(error)
+            next(error);
         }
     }
-)
+);
 
-export default router
+export default router;

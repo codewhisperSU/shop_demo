@@ -1,8 +1,9 @@
-import express from 'express'
-import PurchaseController from '../controllers/purchase.controller'
-import { PurchaseService } from '../services/purchase'
+import express from 'express';
+import { check, validationResult } from 'express-validator';
+import PurchaseController from '../controllers/purchase.controller';
+import { PurchaseService } from '../services/purchase';
 
-const router = express.Router()
+const router = express.Router();
 
 /**
  * @openapi
@@ -50,16 +51,42 @@ const router = express.Router()
 
 router.post(
     '/add',
-    async (req: express.Request, res: express.Response, next) => {
-        const controller = new PurchaseController(new PurchaseService())
+    [
+        check('customerName')
+            .notEmpty()
+            .withMessage('CustomerNAme cannot be empty')
+            .isString()
+            .isLength({ min: 5, max: 500 })
+            .withMessage('Name length is too short or too big.'),
+
+        check('products.*.name')
+            .isString()
+            .isLength({ min: 5, max: 500 })
+            .withMessage('Products name length is too short or too big.'),
+        check('products')
+            .isArray({ min: 1 })
+            .withMessage('Missing Products information'),
+    ],
+    async (
+        req: express.Request,
+        res: express.Response,
+        next: express.NextFunction
+    ) => {
+        const validateResult = validationResult(req);
+
+        if (!validateResult.isEmpty()) {
+            next(validateResult.array());
+        }
+
+        const controller = new PurchaseController(new PurchaseService());
         try {
-            const response = await controller.addPurchase(req.body)
-            return res.send(response)
+            const response = await controller.addPurchase(req.body);
+            return res.send(response);
         } catch (error) {
-            next(error)
+            next(error);
         }
     }
-)
+);
 
 /**
  * @openapi
@@ -111,14 +138,14 @@ router.post(
 router.get(
     '/list',
     async (req: express.Request, res: express.Response, next) => {
-        const controller = new PurchaseController(new PurchaseService())
+        const controller = new PurchaseController(new PurchaseService());
         try {
-            const response = await controller.getPurchaseList()
-            return res.send(response)
+            const response = await controller.getPurchaseList();
+            return res.send(response);
         } catch (error) {
-            next(error)
+            next(error);
         }
     }
-)
+);
 
-export default router
+export default router;

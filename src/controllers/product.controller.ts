@@ -14,10 +14,6 @@ export default class ProductController extends Controller {
     @SuccessResponse(201, 'Created')
     @Post('/add')
     public async addProduct(@Body() productRequest: ProductDto): Promise<void> {
-        if (!productRequest.name || !productRequest.unit_price) {
-            throw new Error('Name or unit price missing!');
-        }
-
         try {
             await this.productService.createProduct(productRequest);
         } catch (error: unknown) {

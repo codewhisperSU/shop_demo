@@ -1,7 +1,8 @@
-import express from 'express'
-import SearchController from '../controllers/search.controller'
-import { SearchService } from '../services/search'
-const router = express.Router()
+import express from 'express';
+import { check, validationResult } from 'express-validator';
+import SearchController from '../controllers/search.controller';
+import { SearchService } from '../services/search';
+const router = express.Router();
 
 /**
  * @openapi
@@ -43,17 +44,31 @@ const router = express.Router()
  */
 router.get(
     '/customerOrProductByName/:name',
+    check('name')
+        .notEmpty()
+        .isString()
+        .custom((value: string) => value.match(/^[A-Za-z 0-9]+$/))
+        .withMessage(
+            'Search name cannot be empty and name cannot be hold special marks'
+        ),
+
     async (req: express.Request, res: express.Response, next) => {
-        const controller = new SearchController(new SearchService())
+        const validateResult = validationResult(req);
+
+        if (!validateResult.isEmpty()) {
+            next(validateResult.array());
+        }
+
+        const controller = new SearchController(new SearchService());
         try {
             const response = await controller.searchCustomerOrProductByName(
                 req.params.name
-            )
-            return res.send(response)
+            );
+            return res.send(response);
         } catch (error) {
-            next(error)
+            next(error);
         }
     }
-)
+);
 
-export default router
+export default router;

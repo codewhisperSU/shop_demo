@@ -16,19 +16,6 @@ export default class PurchaseController extends Controller {
     public async addPurchase(
         @Body() purchaseRequest: PurchaseDto
     ): Promise<void> {
-        if (
-            !purchaseRequest.customerName ||
-            purchaseRequest?.products?.length === 0
-        ) {
-            throw new Error(
-                'Purchase customer name or product name is missing!'
-            );
-        }
-
-        if (!Array.isArray(purchaseRequest.products)) {
-            throw new Error('Purchase products is not array!');
-        }
-
         try {
             await this.purchaseService.createPurchase(purchaseRequest);
         } catch (error: unknown) {

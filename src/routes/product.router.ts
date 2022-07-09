@@ -1,8 +1,9 @@
-import express from 'express'
-import ProductController from '../controllers/product.controller'
-import { ProductService } from '../services/product'
+import express from 'express';
+import { check, validationResult } from 'express-validator';
+import ProductController from '../controllers/product.controller';
+import { ProductService } from '../services/product';
 
-const router = express.Router()
+const router = express.Router();
 
 /**
  * @openapi
@@ -42,16 +43,38 @@ const router = express.Router()
  */
 router.post(
     '/add',
-    async (req: express.Request, res: express.Response, next) => {
-        const controller = new ProductController(new ProductService())
+    [
+        check('name')
+            .notEmpty()
+            .withMessage('Name cannot be empty')
+            .isString()
+            .isLength({ min: 5, max: 500 })
+            .withMessage('Name length is too short or too big.'),
+
+        check('unit_price')
+            .isNumeric()
+            .withMessage('Unit price have to be number.'),
+    ],
+    async (
+        req: express.Request,
+        res: express.Response,
+        next: express.NextFunction
+    ) => {
+        const validateResult = validationResult(req);
+
+        if (!validateResult.isEmpty()) {
+            next(validateResult.array());
+        }
+
+        const controller = new ProductController(new ProductService());
         try {
-            const response = await controller.addProduct(req.body)
-            return res.send(response)
+            const response = await controller.addProduct(req.body);
+            return res.send(response);
         } catch (error) {
-            next(error)
+            next(error);
         }
     }
-)
+);
 
 /**
  * @openapi
@@ -85,14 +108,14 @@ router.post(
 router.get(
     '/list',
     async (req: express.Request, res: express.Response, next) => {
-        const controller = new ProductController(new ProductService())
+        const controller = new ProductController(new ProductService());
         try {
-            const response = await controller.getProductList()
-            return res.send(response)
+            const response = await controller.getProductList();
+            return res.send(response);
         } catch (error) {
-            next(error)
+            next(error);
         }
     }
-)
+);
 
-export default router
+export default router;
