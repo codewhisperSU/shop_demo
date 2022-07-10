@@ -76,6 +76,6 @@ describe('Test product controller', () => {
 
         const data = await customerController.getProductList();
 
-        expect(data).toBe('[{"name":"Test product","unit_price":120}]');
+        expect(data).toMatchObject([{ name: 'Test product', unit_price: 120 }]);
     });
 });

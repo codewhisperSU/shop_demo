@@ -93,7 +93,7 @@ describe('Test customer controller', () => {
 
         const data = await purchaseController.getPurchaseList();
 
-        expect(data).toBe([
+        expect(data).toMatchObject([
             {
                 purchaseDate: '2.5.2022',
                 customerName: 'Test customer',

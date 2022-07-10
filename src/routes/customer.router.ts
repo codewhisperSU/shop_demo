@@ -1,6 +1,7 @@
 import express from 'express';
 import { check, validationResult } from 'express-validator';
 import CustomerController from '../controllers/customer.controller';
+import { convertValidationErrorToString } from '../Helpers/convertValidationErrorToString';
 import { CustomerService } from '../services/customer';
 
 const router = express.Router();
@@ -48,14 +49,18 @@ router.post(
         check('name')
             .notEmpty()
             .withMessage('Name cannot be empty')
+            .bail()
             .isString()
             .isLength({ min: 5, max: 500 })
-            .withMessage('Name length is too short or too big.'),
-
+            .withMessage('Name length is too short or too big.')
+            .bail(),
         check('address')
             .isString()
+            .withMessage('Address cannot be empty')
+            .bail()
             .isLength({ min: 0, max: 500 })
-            .withMessage('Address length is too big.'),
+            .withMessage('Address length is too big.')
+            .bail(),
     ],
     async (
         req: express.Request,
@@ -65,7 +70,13 @@ router.post(
         const validateResult = validationResult(req);
 
         if (!validateResult.isEmpty()) {
-            next(validateResult.array());
+            const errorMessage = convertValidationErrorToString(
+                validateResult.array(),
+                ' or '
+            );
+            const error = new Error(errorMessage);
+            next(error);
+            return;
         }
 
         const controller = new CustomerController(new CustomerService());
