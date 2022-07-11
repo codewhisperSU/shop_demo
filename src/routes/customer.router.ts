@@ -51,15 +51,20 @@ router.post(
             .withMessage('Name cannot be empty')
             .bail()
             .isString()
+            .withMessage('Name is not string')
+            .bail()
             .isLength({ min: 5, max: 500 })
-            .withMessage('Name length is too short or too big.')
+            .withMessage('Name length is too short or too big')
             .bail(),
         check('address')
-            .isString()
+            .notEmpty()
             .withMessage('Address cannot be empty')
             .bail()
+            .isString()
+            .withMessage('Address is not string')
+            .bail()
             .isLength({ min: 0, max: 500 })
-            .withMessage('Address length is too big.')
+            .withMessage('Address length is too big')
             .bail(),
     ],
     async (

@@ -1,6 +1,7 @@
 import express from 'express';
 import { check, validationResult } from 'express-validator';
 import PurchaseController from '../controllers/purchase.controller';
+import { convertValidationErrorToString } from '../Helpers/convertValidationErrorToString';
 import { PurchaseService } from '../services/purchase';
 
 const router = express.Router();
@@ -55,17 +56,25 @@ router.post(
         check('customerName')
             .notEmpty()
             .withMessage('CustomerNAme cannot be empty')
+            .bail()
             .isString()
+            .withMessage('CustomerNAme is not string')
+            .bail()
             .isLength({ min: 5, max: 500 })
-            .withMessage('Name length is too short or too big.'),
+            .withMessage('Name length is too short or too big')
+            .bail(),
 
         check('products.*.name')
             .isString()
+            .withMessage('products.*.name is not string')
+            .bail()
             .isLength({ min: 5, max: 500 })
-            .withMessage('Products name length is too short or too big.'),
+            .withMessage('Products name length is too short or too big.')
+            .bail(),
         check('products')
             .isArray({ min: 1 })
-            .withMessage('Missing Products information'),
+            .withMessage('Missing Products information')
+            .bail(),
     ],
     async (
         req: express.Request,
@@ -75,7 +84,13 @@ router.post(
         const validateResult = validationResult(req);
 
         if (!validateResult.isEmpty()) {
-            next(validateResult.array());
+            const errorMessage = convertValidationErrorToString(
+                validateResult.array(),
+                ' or '
+            );
+            const error = new Error(errorMessage);
+            next(error);
+            return;
         }
 
         const controller = new PurchaseController(new PurchaseService());

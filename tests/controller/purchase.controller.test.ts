@@ -1,7 +1,10 @@
 import 'jest';
 import 'reflect-metadata';
+import request from 'supertest';
 import PurchaseController from '../../src/controllers/purchase.controller';
+import { readFileData } from '../../src/Helpers/readTestDataFile';
 import { PurchaseDto } from '../../src/models/purchase';
+import createServer from '../../src/server';
 
 import { PurchaseService } from '../../src/services/purchase';
 
@@ -13,7 +16,22 @@ jest.mock('../../src/services/purchase', () => {
     return { PurchaseService: jest.fn(() => purchaseService) };
 });
 
+const app = createServer();
+
 describe('Test customer controller', () => {
+    var longData = '';
+    var shortData = '';
+
+    beforeAll(() => {
+        readFileData('longText').then((longDataFromFile) => {
+            longData = longDataFromFile;
+        });
+
+        readFileData('smallText').then((shortDataFromFile) => {
+            shortData = shortDataFromFile;
+        });
+    });
+
     afterEach(() => {
         jest.clearAllMocks();
     });
@@ -74,32 +92,10 @@ describe('Test customer controller', () => {
     });
 
     it('Get purchase list! ', async () => {
-        const purchaseService = new PurchaseService();
-        (
-            purchaseService.createPurchase as jest.MockedFunction<any>
-        ).mockResolvedValueOnce();
-        (
-            purchaseService.getListOfPurchase as jest.MockedFunction<any>
-        ).mockResolvedValue([
-            {
-                purchaseDate: '2.5.2022',
-                customerName: 'Test customer',
-                customerAddress: 'Test address',
-                purchaseProduct: [{ name: 'Product test', unit_price: 123 }],
-            },
-        ]);
+        it('Get customer list! ', async () => {
+            const getCustomerList = await request(app).get('/v1/purchase/list');
 
-        const purchaseController = new PurchaseController(purchaseService);
-
-        const data = await purchaseController.getPurchaseList();
-
-        expect(data).toMatchObject([
-            {
-                purchaseDate: '2.5.2022',
-                customerName: 'Test customer',
-                customerAddress: 'Test address',
-                purchaseProduct: [{ name: 'Product test', unit_price: 123 }],
-            },
-        ]);
+            expect(getCustomerList.status).toEqual(200);
+        });
     });
 });

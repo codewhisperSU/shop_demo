@@ -69,7 +69,7 @@ describe('Test customer controller', () => {
 
         expect(notAddress.status).toEqual(500);
         const status = JSON.parse(notAddress.text);
-        expect('Name length is too short or too big.').toEqual(
+        expect('Name length is too short or too big').toEqual(
             status.errorMessage
         );
     });
@@ -81,9 +81,19 @@ describe('Test customer controller', () => {
 
         expect(notAddress.status).toEqual(500);
         const status = JSON.parse(notAddress.text);
-        expect('Name length is too short or too big.').toEqual(
+        expect('Name length is too short or too big').toEqual(
             status.errorMessage
         );
+    });
+
+    it('Get error when name is not string! ', async () => {
+        const notAddress = await request(app)
+            .post('/v1/customer/add')
+            .send({ name: 123456788, address: 'Test addess' });
+
+        expect(notAddress.status).toEqual(500);
+        const status = JSON.parse(notAddress.text);
+        expect('Name is not string').toEqual(status.errorMessage);
     });
 
     it('Get error when address is too long! ', async () => {
@@ -93,7 +103,17 @@ describe('Test customer controller', () => {
 
         expect(notAddress.status).toEqual(500);
         const status = JSON.parse(notAddress.text);
-        expect('Address length is too big.').toEqual(status.errorMessage);
+        expect('Address length is too big').toEqual(status.errorMessage);
+    });
+
+    it('Get error when address is not string! ', async () => {
+        const notAddress = await request(app)
+            .post('/v1/customer/add')
+            .send({ name: 'Test name for system', address: 1234564855 });
+
+        expect(notAddress.status).toEqual(500);
+        const status = JSON.parse(notAddress.text);
+        expect('Address is not string').toEqual(status.errorMessage);
     });
 
     it('set address when short! ', async () => {

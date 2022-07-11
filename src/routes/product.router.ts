@@ -1,6 +1,7 @@
 import express from 'express';
 import { check, validationResult } from 'express-validator';
 import ProductController from '../controllers/product.controller';
+import { convertValidationErrorToString } from '../Helpers/convertValidationErrorToString';
 import { ProductService } from '../services/product';
 
 const router = express.Router();
@@ -47,13 +48,17 @@ router.post(
         check('name')
             .notEmpty()
             .withMessage('Name cannot be empty')
+            .bail()
             .isString()
+            .withMessage('Name include other letters than string')
+            .bail()
             .isLength({ min: 5, max: 500 })
-            .withMessage('Name length is too short or too big.'),
+            .withMessage('Name length is too short or too big.')
+            .bail(),
 
         check('unit_price')
             .isNumeric()
-            .withMessage('Unit price have to be number.'),
+            .withMessage('Unit price have to be number'),
     ],
     async (
         req: express.Request,
@@ -63,7 +68,13 @@ router.post(
         const validateResult = validationResult(req);
 
         if (!validateResult.isEmpty()) {
-            next(validateResult.array());
+            const errorMessage = convertValidationErrorToString(
+                validateResult.array(),
+                ' or '
+            );
+            const error = new Error(errorMessage);
+            next(error);
+            return;
         }
 
         const controller = new ProductController(new ProductService());

@@ -1,6 +1,7 @@
 import express from 'express';
 import { check, validationResult } from 'express-validator';
 import SearchController from '../controllers/search.controller';
+import { convertValidationErrorToString } from '../Helpers/convertValidationErrorToString';
 import { SearchService } from '../services/search';
 const router = express.Router();
 
@@ -56,7 +57,13 @@ router.get(
         const validateResult = validationResult(req);
 
         if (!validateResult.isEmpty()) {
-            next(validateResult.array());
+            const errorMessage = convertValidationErrorToString(
+                validateResult.array(),
+                ' or '
+            );
+            const error = new Error(errorMessage);
+            next(error);
+            return;
         }
 
         const controller = new SearchController(new SearchService());
