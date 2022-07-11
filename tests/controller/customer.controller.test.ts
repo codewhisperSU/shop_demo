@@ -1,10 +1,8 @@
 import 'jest';
 import request from 'supertest';
 import 'reflect-metadata';
-import CustomerController from '../../src/controllers/customer.controller';
-import { CustomerDto } from '../../src/models/customer';
-import { CustomerService } from '../../src/services/customer';
 import createServer from '../../src/server';
+import { readFileData } from '../../src/Helpers/readTestDataFile';
 
 const app = createServer();
 
@@ -17,6 +15,19 @@ jest.mock('../../src/services/customer', () => {
 });
 
 describe('Test customer controller', () => {
+    var longData = '';
+    var shortData = '';
+
+    beforeAll(() => {
+        readFileData('longText').then((longDataFromFile) => {
+            longData = longDataFromFile;
+        });
+
+        readFileData('smallText').then((shortDataFromFile) => {
+            shortData = shortDataFromFile;
+        });
+    });
+
     afterAll(() => {
         jest.clearAllMocks();
     });
@@ -24,53 +35,78 @@ describe('Test customer controller', () => {
     it('Get error when name and address missing! ', async () => {
         const notNameAndAddress = await request(app).post('/v1/customer/add');
 
-        expect(notNameAndAddress).toEqual(500);
-        //expect(notNameAndAddress.text).toBe();
-        console.log(notNameAndAddress);
+        expect(notNameAndAddress.status).toEqual(500);
+        const status = JSON.parse(notNameAndAddress.text);
+        expect('Name cannot be empty or Address cannot be empty').toEqual(
+            status.errorMessage
+        );
     });
 
     it('Get error when name missing! ', async () => {
-        const customerService = new CustomerService();
-        (
-            customerService.createCustomer as jest.MockedFunction<any>
-        ).mockResolvedValueOnce();
-        (
-            customerService.getListOfCustomer as jest.MockedFunction<any>
-        ).mockResolvedValueOnce([
-            { name: 'Test customer', address: 'Test address' },
-        ]);
+        const notName = await request(app)
+            .post('/v1/customer/add')
+            .send({ address: 'Test address' });
 
-        const customerRequest = {
-            address: 'Test address',
-        } as CustomerDto;
+        expect(notName.status).toEqual(500);
+        const status = JSON.parse(notName.text);
+        expect('Name cannot be empty').toEqual(status.errorMessage);
+    });
 
-        const customerController = new CustomerController(customerService);
-        try {
-            await customerController.addCustomer(customerRequest);
-        } catch (ex) {
-            expect((ex as { message: string }).message).toBe(
-                'Name or address missing!'
-            );
-        }
+    it('Get error when address missing! ', async () => {
+        const notAddress = await request(app)
+            .post('/v1/customer/add')
+            .send({ name: 'Test name' });
+
+        expect(notAddress.status).toEqual(500);
+        const status = JSON.parse(notAddress.text);
+        expect('Address cannot be empty').toEqual(status.errorMessage);
+    });
+
+    it('Get error when name is too long! ', async () => {
+        const notAddress = await request(app)
+            .post('/v1/customer/add')
+            .send({ name: longData, address: 'Test addess' });
+
+        expect(notAddress.status).toEqual(500);
+        const status = JSON.parse(notAddress.text);
+        expect('Name length is too short or too big.').toEqual(
+            status.errorMessage
+        );
+    });
+
+    it('Get error when name is too short! ', async () => {
+        const notAddress = await request(app)
+            .post('/v1/customer/add')
+            .send({ name: shortData, address: 'Test addess' });
+
+        expect(notAddress.status).toEqual(500);
+        const status = JSON.parse(notAddress.text);
+        expect('Name length is too short or too big.').toEqual(
+            status.errorMessage
+        );
+    });
+
+    it('Get error when address is too long! ', async () => {
+        const notAddress = await request(app)
+            .post('/v1/customer/add')
+            .send({ name: 'Test name for system', address: longData });
+
+        expect(notAddress.status).toEqual(500);
+        const status = JSON.parse(notAddress.text);
+        expect('Address length is too big.').toEqual(status.errorMessage);
+    });
+
+    it('set address when short! ', async () => {
+        const notAddress = await request(app)
+            .post('/v1/customer/add')
+            .send({ name: 'Test name for system', address: shortData });
+
+        expect(notAddress.status).toEqual(200);
     });
 
     it('Get customer list! ', async () => {
-        const customerService = new CustomerService();
-        (
-            customerService.createCustomer as jest.MockedFunction<any>
-        ).mockResolvedValueOnce();
-        (
-            customerService.getListOfCustomer as jest.MockedFunction<any>
-        ).mockResolvedValueOnce([
-            { name: 'Test customer', address: 'Test address' },
-        ]);
+        const getCustomerList = await request(app).get('/v1/customer/list');
 
-        const customerController = new CustomerController(customerService);
-
-        const data = await customerController.getCustomerList();
-
-        expect(data).toMatchObject([
-            { name: 'Test customer', address: 'Test address' },
-        ]);
+        expect(getCustomerList.status).toEqual(200);
     });
 });
