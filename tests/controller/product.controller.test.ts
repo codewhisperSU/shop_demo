@@ -1,11 +1,8 @@
 import 'jest';
 import 'reflect-metadata';
 import request from 'supertest';
-import ProductController from '../../src/controllers/product.controller';
 import { readFileData } from '../../src/Helpers/readTestDataFile';
-import { ProductDto } from '../../src/models/product';
 import createServer from '../../src/server';
-import { ProductService } from '../../src/services/product';
 
 const app = createServer();
 
@@ -39,16 +36,6 @@ describe('Test product controller', () => {
         const unitPriceMissing = await request(app)
             .post('/v1/product/add')
             .send({ name: 'Testi name', unit_price: 'This is not number' });
-
-        expect(unitPriceMissing.status).toEqual(500);
-        const status = JSON.parse(unitPriceMissing.text);
-        expect('Unit price have to be number').toEqual(status.errorMessage);
-    });
-
-    it('Get error when unit price missing! ', async () => {
-        const unitPriceMissing = await request(app)
-            .post('/v1/product/add')
-            .send({ name: 'Testi name' });
 
         expect(unitPriceMissing.status).toEqual(500);
         const status = JSON.parse(unitPriceMissing.text);

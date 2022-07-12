@@ -66,10 +66,10 @@ router.post(
 
         check('products.*.name')
             .isString()
-            .withMessage('products.*.name is not string')
+            .withMessage('Products.*.name is not string')
             .bail()
             .isLength({ min: 5, max: 500 })
-            .withMessage('Products name length is too short or too big.')
+            .withMessage('Products name length is too short or too big')
             .bail(),
         check('products')
             .isArray({ min: 1 })

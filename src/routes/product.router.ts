@@ -58,6 +58,7 @@ router.post(
 
         check('unit_price')
             .isNumeric()
+            .optional({ nullable: true })
             .withMessage('Unit price have to be number'),
     ],
     async (

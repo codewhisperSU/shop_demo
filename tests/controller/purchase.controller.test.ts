@@ -36,66 +36,121 @@ describe('Test customer controller', () => {
         jest.clearAllMocks();
     });
 
-    it('Get error when address missing! ', async () => {
-        const purchaseService = new PurchaseService();
-        (
-            purchaseService.createPurchase as jest.MockedFunction<any>
-        ).mockResolvedValueOnce();
-        (
-            purchaseService.getListOfPurchase as jest.MockedFunction<any>
-        ).mockResolvedValue([
-            { name: 'Test customer', address: 'Test address' },
-        ]);
+    it('Get error when customer name is empty! ', async () => {
+        const notProductName = await request(app)
+            .post('/v1/purchase/add')
+            .send({
+                customerName: null,
+                products: [{ name: 'Product number one' }],
+            });
 
-        const customerRequest = {
-            customerName: 'Test customer',
-            products: [],
-        } as PurchaseDto;
-
-        const purchaseController = new PurchaseController(purchaseService);
-        try {
-            await purchaseController.addPurchase(customerRequest);
-        } catch (ex) {
-            expect((ex as { message: string }).message).toBe(
-                'Purchase customer name or product name is missing!'
-            );
-        }
+        expect(notProductName.status).toEqual(500);
+        const status = JSON.parse(notProductName.text);
+        expect('CustomerNAme cannot be empty').toEqual(status.errorMessage);
     });
 
-    it('Get error when name missing! ', async () => {
-        const purchaseService = new PurchaseService();
-        (
-            purchaseService.createPurchase as jest.MockedFunction<any>
-        ).mockResolvedValueOnce();
-        (
-            purchaseService.getListOfPurchase as jest.MockedFunction<any>
-        ).mockResolvedValue([
-            { name: 'Test customer', address: 'Test address' },
-        ]);
+    it('Get error when customer name is not string! ', async () => {
+        const notProductName = await request(app)
+            .post('/v1/purchase/add')
+            .send({
+                customerName: 12345677,
+                products: [{ name: 'Product number one' }],
+            });
 
-        const customerRequest = {
-            products: [
-                {
-                    name: 'Product test',
-                },
-            ],
-        } as PurchaseDto;
+        expect(notProductName.status).toEqual(500);
+        const status = JSON.parse(notProductName.text);
+        expect('CustomerNAme is not string').toEqual(status.errorMessage);
+    });
 
-        const purchaseController = new PurchaseController(purchaseService);
-        try {
-            await purchaseController.addPurchase(customerRequest);
-        } catch (ex) {
-            expect((ex as { message: string }).message).toBe(
-                'Purchase customer name or product name is missing!'
-            );
-        }
+    it('Get error when name is too long! ', async () => {
+        const notProductName = await request(app)
+            .post('/v1/purchase/add')
+            .send({
+                customerName: longData,
+                products: [{ name: 'Product number one' }],
+            });
+
+        expect(notProductName.status).toEqual(500);
+        const status = JSON.parse(notProductName.text);
+        expect('Name length is too short or too big').toEqual(
+            status.errorMessage
+        );
+    });
+
+    it('Get error when name is too short! ', async () => {
+        const notProductName = await request(app)
+            .post('/v1/purchase/add')
+            .send({
+                customerName: shortData,
+                products: [{ name: 'Product number one' }],
+            });
+
+        expect(notProductName.status).toEqual(500);
+        const status = JSON.parse(notProductName.text);
+        expect('Name length is too short or too big').toEqual(
+            status.errorMessage
+        );
+    });
+
+    it('Get error when product name is not string! ', async () => {
+        const notProductName = await request(app)
+            .post('/v1/purchase/add')
+            .send({
+                customerName: 'Test customer name',
+                products: [{ name: 1234566 }],
+            });
+
+        expect(notProductName.status).toEqual(500);
+        const status = JSON.parse(notProductName.text);
+        expect('Products.*.name is not string').toEqual(status.errorMessage);
+    });
+
+    it('Get error when product name is too long! ', async () => {
+        const notProductName = await request(app)
+            .post('/v1/purchase/add')
+            .send({
+                customerName: 'Test customer name',
+                products: [{ name: longData }],
+            });
+
+        expect(notProductName.status).toEqual(500);
+        const status = JSON.parse(notProductName.text);
+        expect('Products name length is too short or too big').toEqual(
+            status.errorMessage
+        );
+    });
+
+    it('Get error when product name is too short! ', async () => {
+        const notProductName = await request(app)
+            .post('/v1/purchase/add')
+            .send({
+                customerName: 'Test customer name',
+                products: [{ name: shortData }],
+            });
+
+        expect(notProductName.status).toEqual(500);
+        const status = JSON.parse(notProductName.text);
+        expect('Products name length is too short or too big').toEqual(
+            status.errorMessage
+        );
+    });
+
+    it('Get error when product data missing', async () => {
+        const notProductName = await request(app)
+            .post('/v1/purchase/add')
+            .send({
+                customerName: 'Test customer name',
+                products: [],
+            });
+
+        expect(notProductName.status).toEqual(500);
+        const status = JSON.parse(notProductName.text);
+        expect('Missing Products information').toEqual(status.errorMessage);
     });
 
     it('Get purchase list! ', async () => {
-        it('Get customer list! ', async () => {
-            const getCustomerList = await request(app).get('/v1/purchase/list');
+        const getCustomerList = await request(app).get('/v1/purchase/list');
 
-            expect(getCustomerList.status).toEqual(200);
-        });
+        expect(getCustomerList.status).toEqual(200);
     });
 });
