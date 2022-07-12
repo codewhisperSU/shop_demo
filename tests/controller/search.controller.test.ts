@@ -1,7 +1,11 @@
 import 'jest';
 import 'reflect-metadata';
+import request from 'supertest';
 import SearchController from '../../src/controllers/search.controller';
+import createServer from '../../src/server';
 import { SearchService } from '../../src/services/search';
+
+const app = createServer();
 
 jest.mock('../../src/services/search', () => {
     const searchService = {
@@ -16,19 +20,23 @@ describe('Test search controller', () => {
     });
 
     it('Get error when name missing! ', async () => {
-        const searchService = new SearchService();
-        (
-            searchService.customerOrProductByName as jest.MockedFunction<any>
-        ).mockResolvedValue();
+        const notSearchName = await request(app).get(
+            '/v1/search/customerOrProductByName/*'
+        );
 
-        const serviceController = new SearchController(searchService);
-        try {
-            await serviceController.searchCustomerOrProductByName('');
-        } catch (ex) {
-            expect((ex as { message: string }).message).toBe(
-                'Search name is empty!'
-            );
-        }
+        expect(notSearchName.status).toEqual(500);
+        const status = JSON.parse(notSearchName.text);
+        expect('Search name cannot be hold special marks').toEqual(
+            status.errorMessage
+        );
+    });
+
+    it('Get error when parameter is missing! ', async () => {
+        const notSearchName = await request(app).get(
+            '/v1/search/customerOrProductByName/'
+        );
+
+        expect(notSearchName.status).toEqual(404);
     });
 
     it('Get search value! ', async () => {

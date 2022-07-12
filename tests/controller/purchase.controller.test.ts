@@ -1,9 +1,7 @@
 import 'jest';
 import 'reflect-metadata';
 import request from 'supertest';
-import PurchaseController from '../../src/controllers/purchase.controller';
 import { readFileData } from '../../src/Helpers/readTestDataFile';
-import { PurchaseDto } from '../../src/models/purchase';
 import createServer from '../../src/server';
 
 import { PurchaseService } from '../../src/services/purchase';

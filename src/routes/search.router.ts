@@ -1,5 +1,5 @@
 import express from 'express';
-import { check, validationResult } from 'express-validator';
+import { param, validationResult } from 'express-validator';
 import SearchController from '../controllers/search.controller';
 import { convertValidationErrorToString } from '../Helpers/convertValidationErrorToString';
 import { SearchService } from '../services/search';
@@ -45,13 +45,9 @@ const router = express.Router();
  */
 router.get(
     '/customerOrProductByName/:name',
-    check('name')
-        .notEmpty()
-        .isString()
+    param('name')
         .custom((value: string) => value.match(/^[A-Za-z 0-9]+$/))
-        .withMessage(
-            'Search name cannot be empty and name cannot be hold special marks'
-        ),
+        .withMessage('Search name cannot be hold special marks'),
 
     async (req: express.Request, res: express.Response, next) => {
         const validateResult = validationResult(req);
