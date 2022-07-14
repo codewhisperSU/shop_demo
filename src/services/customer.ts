@@ -3,6 +3,7 @@ import { PrismaClient } from '@prisma/client';
 import { Customer, CustomerList } from '../models/customer/customer';
 import { CustomerDto } from '../models/customer';
 import { CustomerListDto } from '../models/customer/customer.dto';
+import { createUser } from '../db/createCustomer';
 
 const prisma = new PrismaClient();
 
@@ -23,12 +24,7 @@ export class CustomerService {
         }
 
         try {
-            await prisma.customer.create({
-                data: {
-                    name: customer.name,
-                    address: customer.address,
-                },
-            });
+            await createUser(customer, { prisma: prisma });
         } catch {
             throw new Error('Cannot create customer!');
         }
