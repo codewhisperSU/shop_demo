@@ -3,20 +3,19 @@ import { PrismaClient } from '@prisma/client';
 import { Customer, CustomerList } from '../models/customer/customer';
 import { CustomerDto } from '../models/customer';
 import { CustomerListDto } from '../models/customer/customer.dto';
-import { createUser } from '../db/createCustomer';
+import {
+    createCustomer,
+    getListOfCustomer,
+    findFirstCustomer,
+} from '../db/customerHandling';
 
 const prisma = new PrismaClient();
 
 @singleton()
 export class CustomerService {
     public async createCustomer(customer: CustomerDto): Promise<void> {
-        const customerData = await prisma.customer.findFirst({
-            where: {
-                name: customer.name,
-                AND: {
-                    address: customer.address,
-                },
-            },
+        const customerData = await findFirstCustomer(customer, {
+            prisma: prisma,
         });
 
         if (customerData) {
@@ -24,14 +23,14 @@ export class CustomerService {
         }
 
         try {
-            await createUser(customer, { prisma: prisma });
+            await createCustomer(customer, { prisma: prisma });
         } catch {
             throw new Error('Cannot create customer!');
         }
     }
 
     public async getListOfCustomer(): Promise<CustomerListDto> {
-        const customerList = await prisma.customer.findMany();
+        const customerList = await getListOfCustomer({ prisma: prisma });
 
         const customer = customerList.map((r) => {
             return { name: r.name, address: r.address } as Customer;

@@ -96,6 +96,14 @@ describe('Test customer controller', () => {
         expect('Name is not string').toEqual(status.errorMessage);
     });
 
+    it('Create user! ', async () => {
+        const notAddress = await request(app)
+            .post('/v1/customer/add')
+            .send({ name: 'Test user', address: 'Test addess' });
+
+        expect(notAddress.status).toEqual(200);
+    });
+
     it('Get error when address is too long! ', async () => {
         const notAddress = await request(app)
             .post('/v1/customer/add')

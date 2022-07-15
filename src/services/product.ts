@@ -4,19 +4,19 @@ import { Customer, CustomerList } from '../models/customer/customer';
 import { Product, ProductList } from '../models/product/product';
 import { ProductDto } from '../models/product';
 import { ProductListDto } from '../models/product/product.dto';
+import {
+    createProduct,
+    findFirstProduct,
+    findManyCustomer,
+} from '../db/productHandling';
 
 const prisma = new PrismaClient();
 
 @singleton()
 export class ProductService {
     public async createProduct(product: ProductDto): Promise<void> {
-        const customerData = await prisma.product.findFirst({
-            where: {
-                name: product.name,
-                AND: {
-                    unit_price: product.unit_price,
-                },
-            },
+        const customerData = await findFirstProduct(product, {
+            prisma: prisma,
         });
 
         if (customerData) {
@@ -24,19 +24,14 @@ export class ProductService {
         }
 
         try {
-            await prisma.product.create({
-                data: {
-                    name: product.name,
-                    unit_price: product.unit_price,
-                },
-            });
+            await createProduct(product, { prisma: prisma });
         } catch {
             throw new Error('Cannot create product!');
         }
     }
 
     public async getListOfProduct(): Promise<ProductListDto> {
-        const productList = await prisma.product.findMany();
+        const productList = await findManyCustomer({ prisma: prisma });
 
         const product = productList.map((r) => {
             return { name: r.name, unit_price: r.unit_price } as Product;
