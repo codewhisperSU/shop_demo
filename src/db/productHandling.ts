@@ -10,7 +10,7 @@ export async function createProduct(product: ProductDto, ctx: Context) {
     });
 }
 
-export async function findFirstCustomer(product: ProductDto, ctx: Context) {
+export async function findFirstProduct(product: ProductDto, ctx: Context) {
     return await ctx.prisma.product.findFirst({
         where: {
             name: product.name,

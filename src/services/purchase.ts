@@ -3,17 +3,22 @@ import { PrismaClient } from '@prisma/client';
 import { PurchaseDto, PurchaseList } from '../models/purchase';
 import { PurchasePerCustomerProduct } from '../models/purchase/purchase';
 import { PurchaseListDto } from '../models/purchase/purchase.dto';
+import {
+    createPurchase,
+    findManyProduct,
+    findManyPurchase,
+    findUniquePurchaseCustomer,
+} from '../db/purchaseHandling';
 
 const prisma = new PrismaClient();
 
 @singleton()
 export class PurchaseService {
     public async createPurchase(purchase: PurchaseDto): Promise<void> {
-        const customerData = await prisma.customer.findUnique({
-            where: {
-                name: purchase.customerName as string,
-            },
-        });
+        const customerData = await findUniquePurchaseCustomer(
+            purchase.customerName,
+            { prisma: prisma }
+        );
 
         if (!customerData) {
             throw new Error('Not found customer!');
@@ -21,10 +26,8 @@ export class PurchaseService {
 
         const productsName = purchase.products.map((r) => r.name);
 
-        const products = await prisma.product.findMany({
-            where: {
-                name: { in: productsName },
-            },
+        const products = await findManyProduct(productsName, {
+            prisma: prisma,
         });
 
         if (products.length === purchase.products.length) {
@@ -33,14 +36,13 @@ export class PurchaseService {
             });
 
             try {
-                await prisma.purchase.create({
-                    data: {
+                await createPurchase(
+                    {
                         customerId: customerData.id,
-                        products: {
-                            connect: productIds,
-                        },
+                        productIds: productIds,
                     },
-                });
+                    { prisma: prisma }
+                );
             } catch {
                 throw new Error('Create new purchase failed!');
             }
@@ -50,12 +52,7 @@ export class PurchaseService {
     }
 
     public async getListOfPurchase(): Promise<PurchaseListDto> {
-        const purchaseList = await prisma.purchase.findMany({
-            include: {
-                products: true,
-                customer: true,
-            },
-        });
+        const purchaseList = await findManyPurchase({ prisma: prisma });
 
         const purchase = purchaseList.map((r) => {
             return {
