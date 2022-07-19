@@ -1,8 +1,12 @@
 import 'reflect-metadata';
 import dotenv from 'dotenv';
 import createServer from './server';
+import { container } from 'tsyringe';
+import { ConnectionService } from './services/connection';
 
 dotenv.config();
+
+container.register('IDatabase', { useClass: ConnectionService });
 
 const port = process.env.PORT;
 

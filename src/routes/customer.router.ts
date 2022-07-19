@@ -1,9 +1,12 @@
 import express from 'express';
 import { check, validationResult } from 'express-validator';
+import { container } from 'tsyringe';
 import CustomerController from '../controllers/customer.controller';
 import { convertValidationErrorToString } from '../Helpers/convertValidationErrorToString';
 import { CustomerService } from '../services/customer';
+import { DatabaseService } from '../services/database';
 
+const databaseConnection = container.resolve(DatabaseService);
 const router = express.Router();
 
 /**
@@ -84,7 +87,9 @@ router.post(
             return;
         }
 
-        const controller = new CustomerController(new CustomerService());
+        const controller = new CustomerController(
+            new CustomerService(databaseConnection)
+        );
         try {
             const response = await controller.addCustomer(req.body);
             return res.send(response);
@@ -126,7 +131,9 @@ router.post(
 router.get(
     '/list',
     async (req: express.Request, res: express.Response, next) => {
-        const controller = new CustomerController(new CustomerService());
+        const controller = new CustomerController(
+            new CustomerService(databaseConnection)
+        );
         try {
             const response = await controller.getCustomerList();
             return res.send(response);

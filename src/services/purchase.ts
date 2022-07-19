@@ -1,5 +1,4 @@
 import { singleton } from 'tsyringe';
-import { PrismaClient } from '@prisma/client';
 import { PurchaseDto, PurchaseList } from '../models/purchase';
 import { PurchasePerCustomerProduct } from '../models/purchase/purchase';
 import { PurchaseListDto } from '../models/purchase/purchase.dto';
@@ -9,15 +8,19 @@ import {
     findManyPurchase,
     findUniquePurchaseCustomer,
 } from '../db/purchaseHandling';
-
-const prisma = new PrismaClient();
+import { DatabaseService } from './database';
 
 @singleton()
 export class PurchaseService {
+    private database: DatabaseService;
+    constructor(database: DatabaseService) {
+        this.database = database;
+    }
+
     public async createPurchase(purchase: PurchaseDto): Promise<void> {
         const customerData = await findUniquePurchaseCustomer(
             purchase.customerName,
-            { prisma: prisma }
+            { prisma: this.database.connect }
         );
 
         if (!customerData) {
@@ -27,21 +30,21 @@ export class PurchaseService {
         const productsName = purchase.products.map((r) => r.name);
 
         const products = await findManyProduct(productsName, {
-            prisma: prisma,
+            prisma: this.database.connect,
         });
 
         if (products.length === purchase.products.length) {
             const productIds = products.map((r) => {
-                return { id: r.id };
+                return { id: r.id ?? -1 };
             });
 
             try {
                 await createPurchase(
                     {
-                        customerId: customerData.id,
+                        customerId: customerData.id ?? -1,
                         productIds: productIds,
                     },
-                    { prisma: prisma }
+                    { prisma: this.database.connect }
                 );
             } catch {
                 throw new Error('Create new purchase failed!');
@@ -52,7 +55,9 @@ export class PurchaseService {
     }
 
     public async getListOfPurchase(): Promise<PurchaseListDto> {
-        const purchaseList = await findManyPurchase({ prisma: prisma });
+        const purchaseList = await findManyPurchase({
+            prisma: this.database.connect,
+        });
 
         const purchase = purchaseList.map((r) => {
             return {

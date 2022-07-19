@@ -1,6 +1,4 @@
 import { singleton } from 'tsyringe';
-import { PrismaClient } from '@prisma/client';
-import { Customer, CustomerList } from '../models/customer/customer';
 import { Product, ProductList } from '../models/product/product';
 import { ProductDto } from '../models/product';
 import { ProductListDto } from '../models/product/product.dto';
@@ -9,14 +7,18 @@ import {
     findFirstProduct,
     findManyCustomer,
 } from '../db/productHandling';
-
-const prisma = new PrismaClient();
+import { DatabaseService } from './database';
 
 @singleton()
 export class ProductService {
+    private database: DatabaseService;
+    constructor(database: DatabaseService) {
+        this.database = database;
+    }
+
     public async createProduct(product: ProductDto): Promise<void> {
         const customerData = await findFirstProduct(product, {
-            prisma: prisma,
+            prisma: this.database.connect,
         });
 
         if (customerData) {
@@ -24,14 +26,16 @@ export class ProductService {
         }
 
         try {
-            await createProduct(product, { prisma: prisma });
+            await createProduct(product, { prisma: this.database.connect });
         } catch {
             throw new Error('Cannot create product!');
         }
     }
 
     public async getListOfProduct(): Promise<ProductListDto> {
-        const productList = await findManyCustomer({ prisma: prisma });
+        const productList = await findManyCustomer({
+            prisma: this.database.connect,
+        });
 
         const product = productList.map((r) => {
             return { name: r.name, unit_price: r.unit_price } as Product;

@@ -1,8 +1,12 @@
 import express from 'express';
 import { param, validationResult } from 'express-validator';
+import { container } from 'tsyringe';
 import SearchController from '../controllers/search.controller';
 import { convertValidationErrorToString } from '../Helpers/convertValidationErrorToString';
+import { DatabaseService } from '../services/database';
 import { SearchService } from '../services/search';
+
+const databaseConnection = container.resolve(DatabaseService);
 const router = express.Router();
 
 /**
@@ -62,7 +66,9 @@ router.get(
             return;
         }
 
-        const controller = new SearchController(new SearchService());
+        const controller = new SearchController(
+            new SearchService(databaseConnection)
+        );
         try {
             const response = await controller.searchCustomerOrProductByName(
                 req.params.name

@@ -1,18 +1,25 @@
 import { singleton } from 'tsyringe';
-import { PrismaClient } from '@prisma/client';
 import { CustomerAndProductListDto } from '../models/search';
 import { findManyCustomer, findManyProduct } from '../db/searchHandling';
-
-const prisma = new PrismaClient();
+import { DatabaseService } from './database';
 
 @singleton()
 export class SearchService {
+    private database: DatabaseService;
+    constructor(database: DatabaseService) {
+        this.database = database;
+    }
+
     public async customerOrProductByName(
         name: string
     ): Promise<CustomerAndProductListDto> {
-        const customerList = await findManyCustomer(name, { prisma: prisma });
+        const customerList = await findManyCustomer(name, {
+            prisma: this.database.connect,
+        });
 
-        const productList = await findManyProduct(name, { prisma: prisma });
+        const productList = await findManyProduct(name, {
+            prisma: this.database.connect,
+        });
 
         const customerOrProductList = {
             product: productList,
