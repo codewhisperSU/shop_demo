@@ -1,13 +1,10 @@
 import 'jest';
 import 'reflect-metadata';
 import request from 'supertest';
-import { container } from 'tsyringe';
-import { TestConnectionService } from '../../src/services/testConnection';
-container.register('IDatabase', { useClass: TestConnectionService });
 import SearchController from '../../src/controllers/search.controller';
+import { TestConnectionService } from '../../src/db/testConnection';
 import createServer from '../../src/server';
 import { SearchService } from '../../src/services/search';
-import { DatabaseService } from '../../src/services/database';
 
 const app = createServer();
 
@@ -44,7 +41,7 @@ describe('Test search controller', () => {
     });
 
     it('Get search value! ', async () => {
-        const fakeDatabase = container.resolve(DatabaseService);
+        const fakeDatabase = new TestConnectionService();
         const searchService = new SearchService(fakeDatabase);
         (
             searchService.customerOrProductByName as jest.MockedFunction<any>

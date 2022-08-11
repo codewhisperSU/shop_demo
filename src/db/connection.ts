@@ -1,15 +1,15 @@
 import { PrismaClient } from '@prisma/client';
 import { Context } from '../../context';
-import { IDatabase } from '../models/database/database';
+import { IConnectionToDatabase } from '../models/database/IConnectionToDatabase';
 
-export class ConnectionService implements IDatabase {
+export class ConnectionService implements IConnectionToDatabase<Context> {
     private prismaClient: PrismaClient;
 
     constructor() {
         this.prismaClient = new PrismaClient();
     }
 
-    connect(): Context | undefined {
+    connect(): Context {
         return { prisma: this.prismaClient };
     }
 }

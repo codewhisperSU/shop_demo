@@ -1,20 +1,18 @@
-import { Customer } from '@prisma/client';
 import 'jest';
+import 'reflect-metadata';
+import { Customer } from '@prisma/client';
 import { container } from 'tsyringe';
-import { MockContext, Context, createMockContext } from '../../context';
-import { CustomerDto } from '../../src/models/customer';
 import { CustomerService } from '../../src/services/customer';
-import { TestConnectionService } from '../../src/services/testConnection';
-
-container.register('IDatabase', { useClass: TestConnectionService });
-
-let mockCtx: MockContext;
-let ctx: Context;
+import { TestConnectionService } from '../../src/db/testConnection';
 
 describe('Test customer controller', () => {
-    beforeEach(() => {
-        mockCtx = createMockContext();
-        ctx = mockCtx as unknown as Context;
+    let fakeDatabase: TestConnectionService;
+    beforeAll(() => {
+        fakeDatabase = new TestConnectionService();
+    });
+
+    afterAll(() => {
+        container.clearInstances();
     });
 
     it('Create new customer', () => {
@@ -24,13 +22,14 @@ describe('Test customer controller', () => {
             address: 'Test address 1',
         };
 
-        mockCtx.prisma.customer.create.mockResolvedValue({
+        fakeDatabase.connect().prisma.customer?.create?.mockResolvedValue({
             id: 1,
             name: customer.name,
             address: customer.address,
         });
 
-        const customerService = new CustomerService();
-        await expext(customerService.createCustomer(customer));
+        const customerService = new CustomerService(fakeDatabase);
+        console.log('test');
+        //await expext(customerService.createCustomer(customer));
     });
 });

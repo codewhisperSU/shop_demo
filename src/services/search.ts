@@ -1,12 +1,12 @@
-import { singleton } from 'tsyringe';
 import { CustomerAndProductListDto } from '../models/search';
 import { findManyCustomer, findManyProduct } from '../db/searchHandling';
-import { DatabaseService } from './database';
+import { Context, MockContext } from '../../context';
+import { IConnectionToDatabase } from '../models/database/IConnectionToDatabase';
 
-@singleton()
 export class SearchService {
-    private database: DatabaseService;
-    constructor(database: DatabaseService) {
+    constructor(
+        private database: IConnectionToDatabase<Context | MockContext>
+    ) {
         this.database = database;
     }
 
@@ -14,11 +14,11 @@ export class SearchService {
         name: string
     ): Promise<CustomerAndProductListDto> {
         const customerList = await findManyCustomer(name, {
-            prisma: this.database.connect,
+            prisma: this.database.connect().prisma,
         });
 
         const productList = await findManyProduct(name, {
-            prisma: this.database.connect,
+            prisma: this.database.connect().prisma,
         });
 
         const customerOrProductList = {

@@ -1,14 +1,16 @@
 import { createMockContext, MockContext } from '../../context';
-import { IDatabase } from '../models/database/database';
+import { IConnectionToDatabase } from '../models/database/IConnectionToDatabase';
 
-export class TestConnectionService implements IDatabase {
+export class TestConnectionService
+    implements IConnectionToDatabase<MockContext>
+{
     private prismaClient: MockContext;
 
     constructor() {
         this.prismaClient = createMockContext();
     }
 
-    connect(): MockContext | undefined {
+    connect(): MockContext {
         return this.prismaClient;
     }
 }

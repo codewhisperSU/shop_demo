@@ -1,9 +1,6 @@
 import 'jest';
 import request from 'supertest';
 import 'reflect-metadata';
-import { container } from 'tsyringe';
-import { TestConnectionService } from '../../src/services/testConnection';
-container.register('IDatabase', { useClass: TestConnectionService });
 import createServer from '../../src/server';
 import { readFileData } from '../../src/Helpers/readTestDataFile';
 

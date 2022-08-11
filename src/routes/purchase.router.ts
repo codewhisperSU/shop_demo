@@ -3,10 +3,7 @@ import { check, validationResult } from 'express-validator';
 import { container } from 'tsyringe';
 import PurchaseController from '../controllers/purchase.controller';
 import { convertValidationErrorToString } from '../Helpers/convertValidationErrorToString';
-import { DatabaseService } from '../services/database';
-import { PurchaseService } from '../services/purchase';
 
-const databaseConnection = container.resolve(DatabaseService);
 const router = express.Router();
 
 /**
@@ -96,9 +93,8 @@ router.post(
             return;
         }
 
-        const controller = new PurchaseController(
-            new PurchaseService(databaseConnection)
-        );
+        const controller = container.resolve(PurchaseController);
+
         try {
             const response = await controller.addPurchase(req.body);
             return res.send(response);
@@ -158,9 +154,7 @@ router.post(
 router.get(
     '/list',
     async (req: express.Request, res: express.Response, next) => {
-        const controller = new PurchaseController(
-            new PurchaseService(databaseConnection)
-        );
+        const controller = container.resolve(PurchaseController);
         try {
             const response = await controller.getPurchaseList();
             return res.send(response);

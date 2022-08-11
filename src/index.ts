@@ -2,7 +2,7 @@ import 'reflect-metadata';
 import dotenv from 'dotenv';
 import createServer from './server';
 import { container } from 'tsyringe';
-import { ConnectionService } from './services/connection';
+import { ConnectionService } from './db/connection';
 
 dotenv.config();
 
