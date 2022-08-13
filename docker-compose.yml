@@ -8,3 +8,11 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: 123
       POSTGRES_DB: shop_demo
+  db_test:
+    image: postgres:12
+    ports:
+      - 5433:5432
+    environment:
+      POSTGRES_USER: postgres_test
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_DB: shop_demo_test

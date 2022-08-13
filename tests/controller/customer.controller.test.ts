@@ -101,6 +101,8 @@ describe('Test customer controller', () => {
             .post('/v1/customer/add')
             .send({ name: 'Test user', address: 'Test addess' });
 
+        console.log(notAddress);
+
         expect(notAddress.status).toEqual(200);
     });
 

@@ -15,9 +15,13 @@ export default class CustomerController extends Controller {
     @Post('/add')
     public async addCustomer(
         @Body() customerRequest: CustomerDto
-    ): Promise<void> {
+    ): Promise<CustomerDto> {
         try {
-            await this.customerService.createCustomer(customerRequest);
+            const customerDtoData = (await this.customerService.createCustomer(
+                customerRequest
+            )) as CustomerDto;
+
+            return customerDtoData;
         } catch (error: unknown) {
             throw new Error((error as { message: string }).message);
         }

@@ -13,7 +13,7 @@
     "prebuild": "npm run swagger",
     "dev": "concurrently \"npx tsc --watch\" \"nodemon -q dist/src/index.js\"",
     "swagger": "tsoa spec",
-    "test": "jest"
+    "test": "dotenv -e .env.test -- npx prisma migrate dev && jest -i"
   },
   "dependencies": {
     "@prisma/client": "^4.0.0",

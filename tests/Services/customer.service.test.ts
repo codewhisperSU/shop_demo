@@ -15,7 +15,7 @@ describe('Test customer controller', () => {
         container.clearInstances();
     });
 
-    it('Create new customer', () => {
+    it('Create new customer', async () => {
         const customer: Customer = {
             id: 1,
             name: 'Test user 1',
@@ -29,7 +29,9 @@ describe('Test customer controller', () => {
         });
 
         const customerService = new CustomerService(fakeDatabase);
-        console.log('test');
-        //await expext(customerService.createCustomer(customer));
+
+        await expect(customerService.createCustomer(customer)).resolves.toEqual(
+            customer
+        );
     });
 });

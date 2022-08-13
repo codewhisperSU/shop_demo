@@ -16,7 +16,7 @@ export class CustomerService {
         this.database = database;
     }
 
-    public async createCustomer(customer: CustomerDto): Promise<void> {
+    public async createCustomer(customer: CustomerDto): Promise<Customer> {
         const customerData = await findFirstCustomer(customer, {
             prisma: this.database.connect().prisma,
         });
@@ -26,7 +26,7 @@ export class CustomerService {
         }
 
         try {
-            await createCustomer(customer, {
+            return await createCustomer(customer, {
                 prisma: this.database.connect().prisma,
             });
         } catch {
