@@ -1,7 +1,7 @@
 import 'jest'
 import 'reflect-metadata'
 import ProductController from '../../src/controllers/product.controller'
-import { ProductRequest } from '../../src/models/product'
+import { ProductDto } from '../../src/models/product'
 import { ProductService } from '../../src/services/product'
 
 jest.mock('../../src/services/product', () => {
@@ -26,13 +26,13 @@ describe('Test product controller', () => {
             productService.getListOfProduct as jest.MockedFunction<any>
         ).mockResolvedValueOnce([{ name: 'Test product', unit_price: 120 }])
 
-        const customerRequest = {
+        const productDto = {
             name: 'Test product',
-        } as ProductRequest
+        } as ProductDto
 
-        const customerController = new ProductController(productService)
+        const productController = new ProductController(productService)
         try {
-            await customerController.addProduct(customerRequest)
+            await productController.addProduct(productDto)
         } catch (ex) {
             expect((ex as { message: string }).message).toBe(
                 'Name or unit price missing!'
@@ -49,13 +49,13 @@ describe('Test product controller', () => {
             productService.getListOfProduct as jest.MockedFunction<any>
         ).mockResolvedValueOnce([{ name: 'Test product', unit_price: 120 }])
 
-        const customerRequest = {
+        const productDto = {
             unit_price: 120,
-        } as ProductRequest
+        } as ProductDto
 
-        const customerController = new ProductController(productService)
+        const productController = new ProductController(productService)
         try {
-            await customerController.addProduct(customerRequest)
+            await productController.addProduct(productDto)
         } catch (ex) {
             expect((ex as { message: string }).message).toBe(
                 'Name or unit price missing!'
@@ -72,10 +72,10 @@ describe('Test product controller', () => {
             productService.getListOfProduct as jest.MockedFunction<any>
         ).mockResolvedValueOnce([{ name: 'Test product', unit_price: 120 }])
 
-        const customerController = new ProductController(productService)
+        const productController = new ProductController(productService)
 
-        const data = await customerController.getProductList()
+        const data = await productController.getProductList()
 
-        expect(data).toBe('[{"name":"Test product","unit_price":120}]')
+        expect(JSON.stringify(data)).toBe('[{"name":"Test product","unit_price":120}]')
     })
 })

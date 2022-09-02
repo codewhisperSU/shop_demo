@@ -28,13 +28,13 @@ describe('Test customer controller', () => {
             { name: 'Test customer', address: 'Test address' },
         ]);
 
-        const customerRequest = {
+        const customerDto = {
             name: 'Test customer',
         } as CustomerDto;
 
         const customerController = new CustomerController(customerService);
         try {
-            await customerController.addCustomer(customerRequest);
+            await customerController.addCustomer(customerDto);
         } catch (ex) {
             expect((ex as { message: string }).message).toBe(
                 'Name or address missing!'
@@ -53,13 +53,13 @@ describe('Test customer controller', () => {
             { name: 'Test customer', address: 'Test address' },
         ]);
 
-        const customerRequest = {
+        const customerDto = {
             address: 'Test address',
         } as CustomerDto;
 
         const customerController = new CustomerController(customerService);
         try {
-            await customerController.addCustomer(customerRequest);
+            await customerController.addCustomer(customerDto);
         } catch (ex) {
             expect((ex as { message: string }).message).toBe(
                 'Name or address missing!'
@@ -82,7 +82,7 @@ describe('Test customer controller', () => {
 
         const data = await customerController.getCustomerList();
 
-        expect(data).toBe(
+        expect(JSON.stringify(data)).toBe(
             '[{"name":"Test customer","address":"Test address"}]'
         );
     });

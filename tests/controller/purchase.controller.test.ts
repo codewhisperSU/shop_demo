@@ -1,7 +1,7 @@
 import 'jest'
 import 'reflect-metadata'
 import PurchaseController from '../../src/controllers/purchase.controller'
-import { PurchaseRequest } from '../../src/models/purchase'
+import { PurchaseDto } from '../../src/models/purchase'
 import { PurchaseService } from '../../src/services/purchase'
 
 jest.mock('../../src/services/purchase', () => {
@@ -28,14 +28,14 @@ describe('Test customer controller', () => {
             { name: 'Test customer', address: 'Test address' },
         ])
 
-        const customerRequest = {
+        const purchaseDto = {
             customerName: 'Test customer',
             products: [],
-        } as PurchaseRequest
+        } as PurchaseDto
 
         const purchaseController = new PurchaseController(purchaseService)
         try {
-            await purchaseController.addPurchase(customerRequest)
+            await purchaseController.addPurchase(purchaseDto)
         } catch (ex) {
             expect((ex as { message: string }).message).toBe(
                 'Purchase customer name or product name is missing!'
@@ -54,17 +54,17 @@ describe('Test customer controller', () => {
             { name: 'Test customer', address: 'Test address' },
         ])
 
-        const customerRequest = {
+        const purchaseDto = {
             products: [
                 {
                     name: 'Product test',
                 },
             ],
-        } as PurchaseRequest
+        } as PurchaseDto
 
         const purchaseController = new PurchaseController(purchaseService)
         try {
-            await purchaseController.addPurchase(customerRequest)
+            await purchaseController.addPurchase(purchaseDto)
         } catch (ex) {
             expect((ex as { message: string }).message).toBe(
                 'Purchase customer name or product name is missing!'
@@ -92,7 +92,7 @@ describe('Test customer controller', () => {
 
         const data = await purchaseController.getPurchaseList()
 
-        expect(data).toBe(
+        expect(JSON.stringify(data)).toBe(
             '[{"purchaseDate":"2.5.2022","customerName":"Test customer","customerAddress":"Test address","purchaseProduct":[{"name":"Product test","unit_price":123}]}]'
         )
     })
