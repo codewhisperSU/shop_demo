@@ -26,13 +26,13 @@ describe('Test product controller', () => {
             productService.getListOfProduct as jest.MockedFunction<any>
         ).mockResolvedValueOnce([{ name: 'Test product', unit_price: 120 }])
 
-        const customerRequest = {
+        const productDto = {
             name: 'Test product',
         } as ProductDto
 
-        const customerController = new ProductController(productService)
+        const productController = new ProductController(productService)
         try {
-            await customerController.addProduct(customerRequest)
+            await productController.addProduct(productDto)
         } catch (ex) {
             expect((ex as { message: string }).message).toBe(
                 'Name or unit price missing!'
@@ -49,13 +49,13 @@ describe('Test product controller', () => {
             productService.getListOfProduct as jest.MockedFunction<any>
         ).mockResolvedValueOnce([{ name: 'Test product', unit_price: 120 }])
 
-        const customerRequest = {
+        const productDto = {
             unit_price: 120,
         } as ProductDto
 
-        const customerController = new ProductController(productService)
+        const productController = new ProductController(productService)
         try {
-            await customerController.addProduct(customerRequest)
+            await productController.addProduct(productDto)
         } catch (ex) {
             expect((ex as { message: string }).message).toBe(
                 'Name or unit price missing!'
@@ -72,9 +72,10 @@ describe('Test product controller', () => {
             productService.getListOfProduct as jest.MockedFunction<any>
         ).mockResolvedValueOnce([{ name: 'Test product', unit_price: 120 }])
 
-        const customerController = new ProductController(productService)
+        const productController = new ProductController(productService)
 
-        const data = await customerController.getProductList()
+        const data = await productController.getProductList()
+
 
         expect(data).toStrictEqual([{"name":"Test product","unit_price":120}])
     })

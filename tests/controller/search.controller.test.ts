@@ -21,9 +21,9 @@ describe('Test search controller', () => {
             searchService.customerOrProductByName as jest.MockedFunction<any>
         ).mockResolvedValue()
 
-        const serviceController = new SearchController(searchService)
+        const searchController = new SearchController(searchService)
         try {
-            await serviceController.searchCustomerOrProductByName('')
+            await searchController.searchCustomerOrProductByName('')
         } catch (ex) {
             expect((ex as { message: string }).message).toBe(
                 'Search name is empty!'
@@ -40,14 +40,16 @@ describe('Test search controller', () => {
             product: [{ name: 'Test product', unit_price: 120 }],
         })
 
-        const serviceController = new SearchController(searchService)
+        const searchController = new SearchController(searchService)
 
-        const data = await serviceController.searchCustomerOrProductByName(
+        const data = await searchController.searchCustomerOrProductByName(
             'Test'
         )
 
+
         expect(data).toStrictEqual(
             {"customer":[{"name":"Test customer","address":"Test address"}],"product":[{"name":"Test product","unit_price":120}]}
+
         )
     })
 })
