@@ -92,8 +92,10 @@ describe('Test customer controller', () => {
 
         const data = await purchaseController.getPurchaseList()
 
-        expect(JSON.stringify(data)).toBe(
-            '[{"purchaseDate":"2.5.2022","customerName":"Test customer","customerAddress":"Test address","purchaseProduct":[{"name":"Product test","unit_price":123}]}]'
+
+        expect(data).toStrictEqual(
+            [{"purchaseDate":"2.5.2022","customerName":"Test customer","customerAddress":"Test address","purchaseProduct":[{"name":"Product test","unit_price":123}]}]
+
         )
     })
 })

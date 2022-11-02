@@ -76,6 +76,7 @@ describe('Test product controller', () => {
 
         const data = await productController.getProductList()
 
-        expect(JSON.stringify(data)).toBe('[{"name":"Test product","unit_price":120}]')
+
+        expect(data).toStrictEqual([{"name":"Test product","unit_price":120}])
     })
 })
