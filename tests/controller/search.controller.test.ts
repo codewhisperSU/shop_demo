@@ -46,8 +46,8 @@ describe('Test search controller', () => {
             'Test'
         )
 
-        expect(data).toBe(
-            '{"customer":[{"name":"Test customer","address":"Test address"}],"product":[{"name":"Test product","unit_price":120}]}'
+        expect(data).toStrictEqual(
+            {"customer":[{"name":"Test customer","address":"Test address"}],"product":[{"name":"Test product","unit_price":120}]}
         )
     })
 })

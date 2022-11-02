@@ -1,7 +1,7 @@
 import 'jest'
 import 'reflect-metadata'
 import ProductController from '../../src/controllers/product.controller'
-import { ProductRequest } from '../../src/models/product'
+import { ProductDto } from '../../src/models/product'
 import { ProductService } from '../../src/services/product'
 
 jest.mock('../../src/services/product', () => {
@@ -28,7 +28,7 @@ describe('Test product controller', () => {
 
         const customerRequest = {
             name: 'Test product',
-        } as ProductRequest
+        } as ProductDto
 
         const customerController = new ProductController(productService)
         try {
@@ -51,7 +51,7 @@ describe('Test product controller', () => {
 
         const customerRequest = {
             unit_price: 120,
-        } as ProductRequest
+        } as ProductDto
 
         const customerController = new ProductController(productService)
         try {
@@ -76,6 +76,6 @@ describe('Test product controller', () => {
 
         const data = await customerController.getProductList()
 
-        expect(data).toBe('[{"name":"Test product","unit_price":120}]')
+        expect(data).toStrictEqual([{"name":"Test product","unit_price":120}])
     })
 })

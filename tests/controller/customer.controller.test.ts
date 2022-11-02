@@ -82,8 +82,8 @@ describe('Test customer controller', () => {
 
         const data = await customerController.getCustomerList();
 
-        expect(data).toBe(
-            '[{"name":"Test customer","address":"Test address"}]'
+        expect(data).toStrictEqual(
+            [{"name":"Test customer","address":"Test address"}]
         );
     });
 });

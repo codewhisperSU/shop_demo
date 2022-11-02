@@ -1,7 +1,7 @@
 import 'jest'
 import 'reflect-metadata'
 import PurchaseController from '../../src/controllers/purchase.controller'
-import { PurchaseRequest } from '../../src/models/purchase'
+import { PurchaseDto } from '../../src/models/purchase'
 import { PurchaseService } from '../../src/services/purchase'
 
 jest.mock('../../src/services/purchase', () => {
@@ -31,7 +31,7 @@ describe('Test customer controller', () => {
         const customerRequest = {
             customerName: 'Test customer',
             products: [],
-        } as PurchaseRequest
+        } as PurchaseDto
 
         const purchaseController = new PurchaseController(purchaseService)
         try {
@@ -60,7 +60,7 @@ describe('Test customer controller', () => {
                     name: 'Product test',
                 },
             ],
-        } as PurchaseRequest
+        } as PurchaseDto
 
         const purchaseController = new PurchaseController(purchaseService)
         try {
@@ -92,8 +92,8 @@ describe('Test customer controller', () => {
 
         const data = await purchaseController.getPurchaseList()
 
-        expect(data).toBe(
-            '[{"purchaseDate":"2.5.2022","customerName":"Test customer","customerAddress":"Test address","purchaseProduct":[{"name":"Product test","unit_price":123}]}]'
+        expect(data).toStrictEqual(
+            [{"purchaseDate":"2.5.2022","customerName":"Test customer","customerAddress":"Test address","purchaseProduct":[{"name":"Product test","unit_price":123}]}]
         )
     })
 })
